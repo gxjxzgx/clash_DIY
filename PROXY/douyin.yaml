@@ -1,13 +1,46 @@
 payload:
+  # 1. 域名规则 (推荐, 覆盖面广且稳定)
+  # ---------------------------------
+  # 抖音主域名
   - DOMAIN-SUFFIX,douyin.com
+  - DOMAIN-SUFFIX,open.douyin.com
   - DOMAIN-SUFFIX,iesdouyin.com
-  - DOMAIN-SUFFIX,douyinstatic.com
+
+  # 抖音内容分发网络 (CDN)
+  # 用于视频、图片、直播等静态资源的加速
   - DOMAIN-SUFFIX,douyincdn.com
   - DOMAIN-SUFFIX,douyinpic.com
   - DOMAIN-SUFFIX,douyinvod.com
-  - DOMAIN-SUFFIX,pstatp.com
-  - DOMAIN-SUFFIX,snssdk.com
+  - DOMAIN-SUFFIX,douyinstatic.com
   - DOMAIN-SUFFIX,amemv.com
-  - DOMAIN-SUFFIX,bytedns.net
+
+  # 字节跳动底层服务域名
+  # 用于SDK、数据统计、网络请求等
+  - DOMAIN-SUFFIX,snssdk.com
+  - DOMAIN-SUFFIX,pstatp.com
   - DOMAIN-SUFFIX,bytedance.com
-  - DOMAIN-SUFFIX,open.douyin.com
+  - DOMAIN-SUFFIX,bytedns.net
+
+  # 2. IP 地址规则 (作为补充)
+  # ---------------------------------
+  # 以下是中国大陆地区与字节跳动/抖音服务相关的部分IP段
+  # 数据来源为公开的IP地址库，可能不完整或随时间变化
+  - IP-CIDR,49.232.0.0/16
+  - IP-CIDR,49.233.0.0/16
+  - IP-CIDR,49.234.0.0/16
+  - IP-CIDR,49.235.0.0/16
+  - IP-CIDR,59.110.0.0/16
+  - IP-CIDR,101.32.0.0/16
+  - IP-CIDR,106.52.0.0/16
+  - IP-CIDR,106.53.0.0/16
+  - IP-CIDR,106.54.0.0/16
+  - IP-CIDR,106.55.0.0/16
+  - IP-CIDR,119.29.0.0/16
+  - IP-CIDR,129.211.0.0/16
+  - IP-CIDR,1.116.0.0/14
+  - IP-CIDR,103.24.164.0/22
+  - IP-CIDR,111.223.104.0/21
+  - IP-CIDR,116.162.64.0/18
+  - IP-CIDR,121.199.64.0/18
+  - IP-CIDR,125.209.208.0/20
+  - IP-CIDR,203.107.4.0/22

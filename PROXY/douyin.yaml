@@ -18,6 +18,15 @@ payload:
   - DOMAIN-SUFFIX,bdurl.net
 
 
+  - DOMAIN-SUFFIX,zjcdn.com
+
+  - DOMAIN-SUFFIX,bytednsdoc.com
+
+  - DOMAIN-SUFFIX,bytemastatic.com
+
+   
+   
+  
 
   # 字节跳动底层服务域名
   # 用于SDK、数据统计、网络请求等

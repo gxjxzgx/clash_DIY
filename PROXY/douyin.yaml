@@ -14,6 +14,10 @@ payload:
   - DOMAIN-SUFFIX,douyinstatic.com
   - DOMAIN-SUFFIX,amemv.com
 
+  - DOMAIN-SUFFIX,bdurl.net
+
+
+
   # 字节跳动底层服务域名
   # 用于SDK、数据统计、网络请求等
   - DOMAIN-SUFFIX,snssdk.com

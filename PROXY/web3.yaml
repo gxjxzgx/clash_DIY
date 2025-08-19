@@ -1,7 +1,6 @@
-
  # ================================================================
-# Web3 Platinum Ultimate Rule-Set
-# Merged & Optimized from Community & AI Lists
+# Web3 Platinum Ultimate Rule-Set v1.1
+# Merged & Optimized from Community & AI Lists (CEX Enhanced)
 # Last Updated: 2025-08-19
 # ================================================================
 
@@ -82,7 +81,7 @@ payload:
 - DOMAIN-SUFFIX,shop
 
 # ----------------------------------------------------------------
-# 2. Centralized Exchanges (CEX) (中心化交易所)
+# 2. Centralized Exchanges (CEX) (中心化交易所) - (已更新)
 # ----------------------------------------------------------------
 - DOMAIN-SUFFIX,binance.com
 - DOMAIN-SUFFIX,binance.org
@@ -96,6 +95,11 @@ payload:
 - DOMAIN-SUFFIX,huobi.com
 - DOMAIN-SUFFIX,bitget.com
 - DOMAIN-SUFFIX,bitfinex.com
+- DOMAIN-SUFFIX,crypto.com
+- DOMAIN-SUFFIX,gemini.com
+- DOMAIN-SUFFIX,bitstamp.net
+- DOMAIN-SUFFIX,upbit.com
+- DOMAIN-SUFFIX,bithumb.com
 
 # ----------------------------------------------------------------
 # 3. Core Infrastructure (核心基础设施)
@@ -304,4 +308,3 @@ payload:
 # --- Launchpads ---
 - DOMAIN-SUFFIX,daomaker.com
 - DOMAIN-SUFFIX,poolz.finance
-

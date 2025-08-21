@@ -11,33 +11,5 @@
   - DOMAIN-SUFFIX,douyinstatic.com
   - DOMAIN-SUFFIX,pstatp.com
 
-  # >> 抖音电商与支付 (E-commerce & Pay)
-  - DOMAIN-SUFFIX,jinritemai.com
-  - DOMAIN-SUFFIX,douyinpay.com
-
-  # >> 抖音功能性域名 (新增 Functional Domains)
-  # 广告与商业化 (Ads & Monetization), 如穿山甲广告平台
-  - DOMAIN-SUFFIX,pangle.cn
-  # 数据与监控 (Analytics & Monitoring), 字节内部性能监控平台
-  - DOMAIN-SUFFIX,slardar.com
-  # 直播与音视频底层技术 (Live & AV Infrastructure), 由火山引擎(BytePlus)提供
-  - DOMAIN-SUFFIX,byteplus.com
-
-  # 2. 字节跳动关联产品与底层服务
-  # ---------------------------------
-  # >> 关联产品 (Related Products)
-  # 抖音火山版
-  - DOMAIN-SUFFIX,huoshan.com
-  #
-  # >> 字节跳动底层服务 (ByteDance Infrastructure)
-  # 字节跳动通用 API 域名
-  - DOMAIN-SUFFIX,zijieapi.com
-  # 字节跳动备用 CDN
-  - DOMAIN-SUFFIX,byteicdn.com
-
-  # 3. 其他主要产品 (可选)
-  # ---------------------------------
-  # - DOMAIN-SUFFIX,toutiao.com
-  # - DOMAIN-SUFFIX,ixigua.com
-  # - DOMAIN-SUFFIX,jianying.com
-  # - DOMAIN-SUFFIX,dongchedi.com
+  
+  

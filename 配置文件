@@ -1,7 +1,7 @@
 /**
  * @file Clash 配置文件动态生成脚本
  * @author YourName (可以替换为你的名字)
- * @version 2.0.0
+ * @version 2.1.0
  * @description
  * 该脚本用于动态生成和修改 Clash (Mihomo 内核) 配置文件。
  * 主要功能包括：
@@ -14,6 +14,18 @@
  */
 
 // --- 用户自定义区域 ---
+
+/**
+ * 策略组连通性检查 URL (Speed Test URL)
+ * - 用于 `select` 和 `fallback` 等策略组，判断节点是否可用。
+ * - 建议使用响应快、稳定、内容少的 URL。
+ * - 常见选项：
+ * "http://www.gstatic.com/generate_204" (Google)
+ * "http://cp.cloudflare.com/" (Cloudflare)
+ * "http://detectportal.firefox.com/success.txt" (Mozilla)
+ */
+const speedTestUrl = "http://www.gstatic.com/generate_204";
+
 
 /**
  * 用户自定义规则 (User Custom Rules)
@@ -217,7 +229,7 @@ function overwriteProxyGroups(params) {
     const autoProxyGroups = availableRegions.map(region => ({
         name: `${region.name} - 自动选择`,
         type: "fallback",
-        url: "http://www.gstatic.com/generate_204",
+        url: speedTestUrl,
         interval: 300,
         tolerance: 50,
         proxies: groupedProxies[region.name],
@@ -244,7 +256,7 @@ function overwriteProxyGroups(params) {
         {
             name: "代理模式",
             type: "select",
-            url: "http://www.gstatic.com/generate_204",
+            url: speedTestUrl,
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/adjust.svg",
             proxies: [
                 "延迟优选", 
@@ -496,9 +508,10 @@ function overwriteDns(params) {
 
   // 国外 DNS 服务器 (DoH)，用于解析国外域名和作为备用
   const foreignNameservers = [
-    "https://1.1.1.1/dns-query",   // Cloudflare
-    "https://8.8.8.8/dns-query",   // Google
-    "https://8.8.4.4/dns-query"    // Google 备用
+    //"https://1.1.1.1/dns-query",   // Cloudflare
+    //"https://8.8.8.8/dns-query",   // Google
+    //"https://8.8.4.4/dns-query"    // Google 备用
+    "https://dns.google/dns-query" 
   ];
 
   const dnsConfig = {

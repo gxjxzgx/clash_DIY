@@ -1,43 +1,80 @@
 payload:
 
-  # 1. 域名规则 (推荐, 覆盖面广且稳定)
-  # ---------------------------------
-  # >> 抖音核心业务 (Core Services)
+  # ================================================================
+  # == 字节跳动 (ByteDance) & 抖音 (Douyin) 域名规则完整版 ==
+  # ================================================================
+  # 最后更新时间: 2025-08-21
+  # 说明: 本列表旨在全面覆盖抖音及字节跳动在中国大陆的主要服务。
+
+  # 1. 抖音核心服务 (Douyin Core Services)
+  # ----------------------------------------------------------------
+  # >> App 运行、API、网页版等基础功能
   - DOMAIN-SUFFIX,douyin.com
   - DOMAIN-SUFFIX,iesdouyin.com
+  - DOMAIN-SUFFIX,douyinpic.com
+  - DOMAIN-SUFFIX,douyinvideo.net
 
-  # >> 抖音内容分发网络 (CDN)
+  # >> 内容分发网络 (CDN)
+  # 用于视频、图片、直播流等静态资源加载
   - DOMAIN-SUFFIX,douyincdn.com
   - DOMAIN-SUFFIX,douyinstatic.com
-  - DOMAIN-SUFFIX,pstatp.com
+  - DOMAIN-SUFFIX,pstatp.com         # 字节跳动通用 CDN
+  - DOMAIN-SUFFIX,snssdk.com         # 字节跳动早期通用 CDN
+  - DOMAIN-SUFFIX,amemv.com          # 早期或海外版兼容域名
 
-  # >> 抖音电商与支付 (E-commerce & Pay)
+  # >> 电商与支付 (E-commerce & Pay)
+  # 抖店、精选联盟、抖音支付等
   - DOMAIN-SUFFIX,jinritemai.com
   - DOMAIN-SUFFIX,douyinpay.com
+  - DOMAIN-SUFFIX,dypay.com          # 抖音支付缩写
 
-  # >> 抖音功能性域名 (新增 Functional Domains)
-  # 广告与商业化 (Ads & Monetization), 如穿山甲广告平台
-  - DOMAIN-SUFFIX,pangle.cn
-  # 数据与监控 (Analytics & Monitoring), 字节内部性能监控平台
-  - DOMAIN-SUFFIX,slardar.com
-  # 直播与音视频底层技术 (Live & AV Infrastructure), 由火山引擎(BytePlus)提供
+  # 2. 抖音及字节功能性服务 (Functional Services)
+  # ----------------------------------------------------------------
+  # >> 广告与营销平台 (Ads & Marketing)
+  - DOMAIN-SUFFIX,pangle.cn          # 穿山甲广告平台
+  - DOMAIN-SUFFIX,oceanengine.com    # 巨量引擎营销平台
+  - DOMAIN-SUFFIX,bytedanceapi.com
+  - DOMAIN-SUFFIX,bytednsdoc.com
+
+  # >> 数据与性能监控 (Analytics & Monitoring)
+  - DOMAIN-SUFFIX,slardar.com        # 字节性能监控平台
+  - DOMAIN-SUFFIX,bytegecko.com
+
+  # >> 直播与音视频技术 (Live & AV Tech)
+  # 由火山引擎 (Volcengine) 提供底层支持
   - DOMAIN-SUFFIX,byteplus.com
+  - DOMAIN-SUFFIX,volces.com
+  - DOMAIN-SUFFIX,volcengine.com     # 火山引擎主域名
+  - DOMAIN-SUFFIX,volccdn.com        # 火山引擎 CDN
+  - DOMAIN-SUFFIX,bytevc1.com        # 字节视频编解码
 
-  # 2. 字节跳动关联产品与底层服务
-  # ---------------------------------
-  # >> 关联产品 (Related Products)
-  # 抖音火山版
-  - DOMAIN-SUFFIX,huoshan.com
-  #
-  # >> 字节跳动底层服务 (ByteDance Infrastructure)
-  # 字节跳动通用 API 域名
-  - DOMAIN-SUFFIX,zijieapi.com
-  # 字节跳动备用 CDN
-  - DOMAIN-SUFFIX,byteicdn.com
+  # 3. 字节跳动旗下主要产品 (ByteDance Major Products)
+  # ----------------------------------------------------------------
+  - DOMAIN-SUFFIX,toutiao.com        # 今日头条
+  - DOMAIN-SUFFIX,ixigua.com         # 西瓜视频
+  - DOMAIN-SUFFIX,jianying.com       # 剪映
+  - DOMAIN-SUFFIX,dongchedi.com      # 懂车帝
+  - DOMAIN-SUFFIX,huoshan.com        # 抖音火山版
+  - DOMAIN-SUFFIX,fanqiexiaoshuo.com # 番茄小说
+  - DOMAIN-SUFFIX,doubao.com         # AI 应用 "豆包"
+  - DOMAIN-SUFFIX,feishu.cn          # 企业协作平台 "飞书"
 
-  # 3. 其他主要产品 (可选)
-  # ---------------------------------
-  # - DOMAIN-SUFFIX,toutiao.com
-  # - DOMAIN-SUFFIX,ixigua.com
-  # - DOMAIN-SUFFIX,jianying.com
-  # - DOMAIN-SUFFIX,dongchedi.com
+  # 4. 字节跳动底层与基础设施 (ByteDance Infrastructure)
+  # ----------------------------------------------------------------
+  - DOMAIN-SUFFIX,bytedance.com      # 字节跳动官网
+  - DOMAIN-SUFFIX,zijieapi.com       # 字节跳动通用 API
+  - DOMAIN-SUFFIX,byteicdn.com       # 字节跳动备用 CDN
+  - DOMAIN-SUFFIX,toutiaocdn.com     # 头条 CDN (部分服务通用)
+  - DOMAIN-SUFFIX,bytedns.net        # 字节跳动 DNS 服务
+  - DOMAIN-SUFFIX,byted.org          # 字节跳动持有域名
+  - DOMAIN-SUFFIX,byted.com          # 字节跳动持有域名
+  - DOMAIN-SUFFIX,zjsms.com          # 字节跳动短链服务
+
+  # 5. 海外相关 (Optional - TikTok Related)
+  # ----------------------------------------------------------------
+  # >> 注意: 以下为 TikTok 域名, 部分底层服务可能与抖音共享
+  # >> 如果您只在中国大陆使用, 可以不添加此部分
+  # - DOMAIN-SUFFIX,tiktokcdn.com
+  # - DOMAIN-SUFFIX,tiktokv.com
+  # - DOMAIN-SUFFIX,muscdn.com
+  # - DOMAIN-SUFFIX,musical.ly       # TikTok 前身

@@ -7,12 +7,7 @@ payload:
   # 说明: 本列表旨在全面覆盖抖音及字节跳动在中国大陆的主要服务。
 
   # 1. 抖音核心服务 (Douyin Core Services)
-  # ----------------------------------------------------------------
-  # >> App 运行、API、网页版等基础功能
-  - DOMAIN-SUFFIX,douyin.com
-  - DOMAIN-SUFFIX,iesdouyin.com
-  - DOMAIN-SUFFIX,douyinpic.com
-  - DOMAIN-SUFFIX,douyinvideo.net
+  # 
 
   # >> 内容分发网络 (CDN)
   # 用于视频、图片、直播流等静态资源加载

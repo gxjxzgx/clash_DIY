@@ -1,73 +1,43 @@
-payload:
-  
+ payload:
+
   # 1. 域名规则 (推荐, 覆盖面广且稳定)
   # ---------------------------------
-  # 抖音主域名
+  # >> 抖音核心业务 (Core Services)
   - DOMAIN-SUFFIX,douyin.com
-  - DOMAIN-SUFFIX,open.douyin.com
   - DOMAIN-SUFFIX,iesdouyin.com
 
-  # 抖音内容分发网络 (CDN)
-  # 用于视频、图片、直播等静态资源的加速
+  # >> 抖音内容分发网络 (CDN)
   - DOMAIN-SUFFIX,douyincdn.com
-  - DOMAIN-SUFFIX,douyinpic.com
-  - DOMAIN-SUFFIX,douyinvod.com
   - DOMAIN-SUFFIX,douyinstatic.com
-  - DOMAIN-SUFFIX,amemv.com
-
-  - DOMAIN-SUFFIX,bdurl.net
-
-
-  - DOMAIN-SUFFIX,zjcdn.com
-
-  - DOMAIN-SUFFIX,bytednsdoc.com
-
-  - DOMAIN-SUFFIX,bytemastatic.com
-
-   
-   
-  
-
-  # 字节跳动底层服务域名
-  # 用于SDK、数据统计、网络请求等
-  - DOMAIN-SUFFIX,snssdk.com
   - DOMAIN-SUFFIX,pstatp.com
-  - DOMAIN-SUFFIX,bytedance.com
-  - DOMAIN-SUFFIX,bytedns.net
 
-  # 2. IP 地址规则 (作为补充)
+  # >> 抖音电商与支付 (E-commerce & Pay)
+  - DOMAIN-SUFFIX,jinritemai.com
+  - DOMAIN-SUFFIX,douyinpay.com
+
+  # >> 抖音功能性域名 (新增 Functional Domains)
+  # 广告与商业化 (Ads & Monetization), 如穿山甲广告平台
+  - DOMAIN-SUFFIX,pangle.cn
+  # 数据与监控 (Analytics & Monitoring), 字节内部性能监控平台
+  - DOMAIN-SUFFIX,slardar.com
+  # 直播与音视频底层技术 (Live & AV Infrastructure), 由火山引擎(BytePlus)提供
+  - DOMAIN-SUFFIX,byteplus.com
+
+  # 2. 字节跳动关联产品与底层服务
   # ---------------------------------
-  # 以下是中国大陆地区与字节跳动/抖音服务相关的部分IP段
-  # 数据来源为公开的IP地址库，可能不完整或随时间变化
-  - IP-CIDR,49.232.0.0/16
-  - IP-CIDR,49.233.0.0/16
-  - IP-CIDR,49.234.0.0/16
-  - IP-CIDR,49.235.0.0/16
-  - IP-CIDR,59.110.0.0/16
-  - IP-CIDR,101.32.0.0/16
-  - IP-CIDR,106.52.0.0/16
-  - IP-CIDR,106.53.0.0/16
-  - IP-CIDR,106.54.0.0/16
-  - IP-CIDR,106.55.0.0/16
-  - IP-CIDR,119.29.0.0/16
-  - IP-CIDR,129.211.0.0/16
-  - IP-CIDR,1.116.0.0/14
-  - IP-CIDR,103.24.164.0/22
-  - IP-CIDR,111.223.104.0/21
-  - IP-CIDR,116.162.64.0/18
-  - IP-CIDR,121.199.64.0/18
-  - IP-CIDR,125.209.208.0/20
-  - IP-CIDR,203.107.4.0/22
+  # >> 关联产品 (Related Products)
+  # 抖音火山版
+  - DOMAIN-SUFFIX,huoshan.com
+  #
+  # >> 字节跳动底层服务 (ByteDance Infrastructure)
+  # 字节跳动通用 API 域名
+  - DOMAIN-SUFFIX,zijieapi.com
+  # 字节跳动备用 CDN
+  - DOMAIN-SUFFIX,byteicdn.com
 
-
-
-
-  - IP-CIDR,103.136.221.67/32
-  - IP-CIDR,101.47.81.229/32
-  - IP-CIDR,71.18.101.101/32
-
-  - IP-CIDR,139.177.246.206/32
-  - IP-CIDR,163.181.23.177/32
-  - IP-CIDR,101.47.85.10/32
-
-
+  # 3. 其他主要产品 (可选)
+  # ---------------------------------
+  # - DOMAIN-SUFFIX,toutiao.com
+  # - DOMAIN-SUFFIX,ixigua.com
+  # - DOMAIN-SUFFIX,jianying.com
+  # - DOMAIN-SUFFIX,dongchedi.com

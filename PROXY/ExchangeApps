@@ -1,52 +1,92 @@
-# ==================================
-# ExchangeApps_no_ip
-# 交易所 & 钱包应用包名规则集
-# 所有规则都走“交易所”代理组
-# ==================================
-
 payload:
-  # ----------------- 交易所 -----------------
-  - PROCESS-NAME,com.binance.app,交易所
-  - PROCESS-NAME,com.binance.miner,交易所
-  - PROCESS-NAME,com.huobi.client,交易所
-  - PROCESS-NAME,com.okinc.okex.gp,交易所
-  - PROCESS-NAME,com.bitget.app,交易所
-  - PROCESS-NAME,com.bybit.app,交易所
-  - PROCESS-NAME,com.kucoin.android,交易所
-  - PROCESS-NAME,com.okcoin.app,交易所
-  - PROCESS-NAME,com.gateio.app,交易所
-  - PROCESS-NAME,com.kraken.app,交易所
-  - PROCESS-NAME,com.bibox.app,交易所
-  - PROCESS-NAME,com.coinbase.android,交易所
-  - PROCESS-NAME,com.coinex.app,交易所
-  - PROCESS-NAME,com.bitmart.app,交易所
-  - PROCESS-NAME,com.bitfinex.app,交易所
-  - PROCESS-NAME,com.bitstamp.app,交易所
-  - PROCESS-NAME,com.bitflyer.app,交易所
-  - PROCESS-NAME,com.okcoinpro.app,交易所
-  - PROCESS-NAME,com.poloniex.app,交易所
-  - PROCESS-NAME,com.kucoinpro.android,交易所
-  - PROCESS-NAME,com.mexc.app,交易所
-  - PROCESS-NAME,com.pionex.app,交易所
-  - PROCESS-NAME,com.ascendex.app,交易所
-  - PROCESS-NAME,com.bithumb.live,交易所
-  - PROCESS-NAME,com.coinone.android,交易所
-  - PROCESS-NAME,com.korbit.android,交易所
-  - PROCESS-NAME,com.upbit.android,交易所
-  - PROCESS-NAME,com.crypto.app,交易所
-  - PROCESS-NAME,com.gemini.android,交易所
-  - PROCESS-NAME,io.hotbit.app,交易所
 
-  # ----------------- 钱包 -----------------
-  - PROCESS-NAME,io.metamask,交易所
-  - PROCESS-NAME,com.wallet.crypto.trustapp,交易所
-  - PROCESS-NAME,vip.mytokenpocket,交易所
-  - PROCESS-NAME,im.token.app,交易所
-  - PROCESS-NAME,exodusmovement.exodus,交易所
-  - PROCESS-NAME,com.ledger.live,交易所
-  - PROCESS-NAME,io.safepal.wallet,交易所
-  - PROCESS-NAME,org.toshi,交易所
-  - PROCESS-NAME,com.bitkeep.wallet,交易所
-  - PROCESS-NAME,app.phantom,交易所
-  - PROCESS-NAME,com.mathwallet.android,交易所
-  - PROCESS-NAME,com.lobstr.android,交易所
+----------------- 交易所 -----------------
+
+PROCESS-NAME,com.binance.app             # Binance(币安)
+
+PROCESS-NAME,com.binance.miner           # Binance(币安)
+
+PROCESS-NAME,com.huobi.client            # HTX(火币)
+
+PROCESS-NAME,com.okinc.okex.gp           # OKX(欧易)
+
+PROCESS-NAME,com.bitget.app              # Bitget
+
+PROCESS-NAME,com.bybit.app               # Bybit
+
+PROCESS-NAME,com.kucoin.android          # KuCoin(库币)
+
+PROCESS-NAME,com.okcoin.app              # OKCoin
+
+PROCESS-NAME,com.gateio.app              # Gate.io(芝麻开门)
+
+PROCESS-NAME,com.kraken.invest           # Kraken(K网)
+
+PROCESS-NAME,com.bibox.app               # Bibox
+
+PROCESS-NAME,com.coinbase.android        # Coinbase
+
+PROCESS-NAME,com.coinex.app              # CoinEx
+
+PROCESS-NAME,com.bitmart.app             # BitMart
+
+PROCESS-NAME,com.bitfinex.app            # Bitfinex
+
+PROCESS-NAME,com.bitstamp.app            # Bitstamp
+
+PROCESS-NAME,com.bitflyer.app            # bitFlyer
+
+PROCESS-NAME,com.okcoinpro.app           # OKCoin
+
+PROCESS-NAME,com.poloniex.app            # Poloniex
+
+PROCESS-NAME,com.kucoinpro.android       # KuCoin(库币)
+
+PROCESS-NAME,com.mexc.app                # MEXC(抹茶)
+
+PROCESS-NAME,com.pionex.app              # Pionex(派网)
+
+PROCESS-NAME,com.ascendex.app            # AscendEX
+
+PROCESS-NAME,com.bithumb.live            # Bithumb
+
+PROCESS-NAME,com.coinone.android         # Coinone
+
+PROCESS-NAME,com.korbit.android          # Korbit
+
+PROCESS-NAME,com.upbit.android           # Upbit
+
+PROCESS-NAME,co.mona.android             # Crypto.com
+
+PROCESS-NAME,com.gemini.android          # Gemini(双子星)
+
+
+----------------- 钱包 -----------------
+
+PROCESS-NAME,io.metamask                 # MetaMask
+
+PROCESS-NAME,com.wallet.crypto.trustapp  # Trust Wallet
+
+PROCESS-NAME,vip.mytokenpocket           # TokenPocket
+
+PROCESS-NAME,im.token.app                # imToken
+
+PROCESS-NAME,exodusmovement.exodus       # Exodus
+
+PROCESS-NAME,com.ledger.live             # Ledger Live
+
+PROCESS-NAME,io.safepal.wallet           # SafePal
+
+PROCESS-NAME,org.toshi                   # Coinbase Wallet
+
+PROCESS-NAME,com.bitkeep.wallet          # Bitget Wallet (BitKeep)
+
+PROCESS-NAME,app.phantom                 # Phantom Wallet
+
+PROCESS-NAME,com.mathwallet.android      # MathWallet
+
+PROCESS-NAME,com.lobstr.android          # LOBSTR Wallet
+
+
+读取对吗
+

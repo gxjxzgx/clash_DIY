@@ -5,7 +5,7 @@ payload:
   - DOMAIN-SUFFIX,com.binance.miner          # Binance(币安)
   - DOMAIN-SUFFIX,com.huobi.client           # Huobi(火币)
   - DOMAIN-SUFFIX,com.okinc.okex.gp          # OKX(欧易)
-  - DOMAIN-SUFFIX,com.bitget.app             # Bitget
+  - DOMAIN-SUFFIX,com.bitget.exchange        # Bitget
   - DOMAIN-SUFFIX,com.bybit.app              # Bybit
   - DOMAIN-SUFFIX,com.kucoin.android         # KuCoin(库币)
   - DOMAIN-SUFFIX,com.okcoin.app             # OKCoin

@@ -1,0 +1,47 @@
+payload:
+
+  # ----------------- 交易所 -----------------
+  - DOMAIN-SUFFIX,com.binance.dev            # Binance(币安)
+  - DOMAIN-SUFFIX,com.binance.miner          # Binance(币安)
+  - DOMAIN-SUFFIX,com.huobi.client           # Huobi(火币)
+  - DOMAIN-SUFFIX,com.okinc.okex.gp          # OKX(欧易)
+  - DOMAIN-SUFFIX,com.bitget.app             # Bitget
+  - DOMAIN-SUFFIX,com.bybit.app              # Bybit
+  - DOMAIN-SUFFIX,com.kucoin.android         # KuCoin(库币)
+  - DOMAIN-SUFFIX,com.okcoin.app             # OKCoin
+  - DOMAIN-SUFFIX,com.gateio.app             # Gate.io(芝麻开门)
+  - DOMAIN-SUFFIX,com.kraken.app             # Kraken(K网)
+  - DOMAIN-SUFFIX,com.bibox.app              # Bibox
+  - DOMAIN-SUFFIX,com.coinbase.android       # Coinbase
+  - DOMAIN-SUFFIX,com.coinex.app             # CoinEx
+  - DOMAIN-SUFFIX,com.bitmart.app            # BitMart
+  - DOMAIN-SUFFIX,com.bitfinex.app           # Bitfinex
+  - DOMAIN-SUFFIX,com.bitstamp.app           # Bitstamp
+  - DOMAIN-SUFFIX,com.bitflyer.app           # bitFlyer
+  - DOMAIN-SUFFIX,com.okcoinpro.app          # OKCoin
+  - DOMAIN-SUFFIX,com.poloniex.app           # Poloniex
+  - DOMAIN-SUFFIX,com.kucoinpro.android      # KuCoin(库币)
+  - DOMAIN-SUFFIX,com.mexc.app               # MEXC(抹茶)
+  - DOMAIN-SUFFIX,com.pionex.app             # Pionex(派网)
+  - DOMAIN-SUFFIX,com.ascendex.app           # AscendEX
+  - DOMAIN-SUFFIX,com.bithumb.live           # Bithumb
+  - DOMAIN-SUFFIX,com.coinone.android        # Coinone
+  - DOMAIN-SUFFIX,com.korbit.android         # Korbit
+  - DOMAIN-SUFFIX,com.upbit.android          # Upbit
+  - DOMAIN-SUFFIX,com.crypto.app             # Crypto.com
+  - DOMAIN-SUFFIX,com.gemini.android         # Gemini(双子星)
+  - DOMAIN-SUFFIX,io.hotbit.app              # Hotbit
+
+  # ----------------- 钱包 -----------------
+  - DOMAIN-SUFFIX,io.metamask                # MetaMask
+  - DOMAIN-SUFFIX,com.wallet.crypto.trustapp # Trust Wallet
+  - DOMAIN-SUFFIX,vip.mytokenpocket          # TokenPocket
+  - DOMAIN-SUFFIX,im.token.app               # imToken
+  - DOMAIN-SUFFIX,exodusmovement.exodus      # Exodus
+  - DOMAIN-SUFFIX,com.ledger.live            # Ledger Live
+  - DOMAIN-SUFFIX,io.safepal.wallet          # SafePal
+  - DOMAIN-SUFFIX,org.toshi                  # Coinbase Wallet
+  - DOMAIN-SUFFIX,com.bitkeep.wallet         # Bitget Wallet (BitKeep)
+  - DOMAIN-SUFFIX,app.phantom                # Phantom Wallet
+  - DOMAIN-SUFFIX,com.mathwallet.android     # MathWallet
+  - DOMAIN-SUFFIX,com.lobstr.android         # LOBSTR Wallet

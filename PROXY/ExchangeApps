@@ -75,11 +75,7 @@ payload:
 
 #---------------- 社区/社交 Community_Social -----------------
 
-  - PROCESS-NAME,com.discord                  # Discord 社区
-  - PROCESS-NAME,com.reddit.frontpage         # Reddit 社区
-  - PROCESS-NAME,org.telegram.messenger       # Telegram 聊天工具
-  - PROCESS-NAME,org.thunderdog.challegram    # Telegram X 第三方
-  - PROCESS-NAME,com.twitter.android          # X（原 Twitter）
+ 
 
 #---------------- 挖矿/其他工具 Mining_Other_Tools -----------------
 

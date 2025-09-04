@@ -1,7 +1,7 @@
 /**
  * @file Clash 配置文件动态生成脚本
  * @author YourName (可以替换为你的名字)
- * @version 2.1.0
+ * @version 2.2.1
  * @description
  * 该脚本用于动态生成和修改 Clash (Mihomo 内核) 配置文件。
  * 主要功能包括：
@@ -44,11 +44,8 @@ const AddCustomization = [
     "DOMAIN-KEYWORD,upai,代理模式",
     "DOMAIN-SUFFIX,ipinfo.io,代理模式",
     "DOMAIN-SUFFIX,ipdata.co,代理模式",
-    "DOMAIN-KEYWORD,okx,代理模式",
-    "DOMAIN-KEYWORD,bybit,代理模式",
-    "DOMAIN-KEYWORD,bitget,代理模式",
-    
     "DOMAIN-SUFFIX,jianguoyun.com,DIRECT",
+
     // "DOMAIN-SUFFIX,900cha.com,代理模式", // 示例
 ];
 
@@ -168,9 +165,10 @@ function overwriteProxyGroups(params) {
         { code: "TW", name: "🇹🇼 台湾", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/tw.svg", regex: /(台湾|TW|Taiwan|🇹🇼)/i },
         { code: "SG", name: "🇸🇬 新加坡", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/sg.svg", regex: /(新加坡|狮城|SG|Singapore|🇸🇬)/i },
         { code: "JP", name: "🇯🇵 日本", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/jp.svg", regex: /(日本|JP|Japan|🇯🇵)/i },
-        { code: "US", name: "🇺🇸 美国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/us.svg", regex: /(美国|US|USA|United States|America|🇺🇸)/i },
-        { code: "DE", name: "🇩🇪 德国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/de.svg", regex: /(德国|DE|Germany|🇩🇪)/i },
         { code: "KR", name: "🇰🇷 韩国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/kr.svg", regex: /(韩国|KR|Korea|South Korea|🇰🇷)/i },
+        { code: "US", name: "🇺🇸 美国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/us.svg", regex: /(美国|US|USA|United States|America|🇺🇸)/i },
+        /*
+        { code: "DE", name: "🇩🇪 德国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/de.svg", regex: /(德国|DE|Germany|🇩🇪)/i },
         { code: "UK", name: "🇬🇧 英国", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/gb.svg", regex: /(英国|UK|United Kingdom|Britain|Great Britain|🇬🇧)/i },
         { code: "CA", name: "🇨🇦 加拿大", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/ca.svg", regex: /(加拿大|CA|Canada|🇨🇦)/i },
         { code: "AU", name: "🇦🇺 澳大利亚", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/au.svg", regex: /(澳大利亚|AU|Australia|🇦🇺)/i },
@@ -186,8 +184,9 @@ function overwriteProxyGroups(params) {
         { code: "AR", name: "🇦🇷 阿根廷", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/ar.svg", regex: /(阿根廷|AR|Argentina|🇦🇷)/i },
         { code: "ES", name: "🇪🇸 西班牙", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/es.svg", regex: /\b(西班牙|ES|Spain|🇪🇸)\b/i },
         { code: "NL", name: "🇳🇱 荷兰", icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/nl.svg", regex: /\b(荷兰|NL|Netherlands|🇳🇱)\b/i },
+        */
         // 兜底选项，用于匹配所有其他未分类的节点
-        { name: "其他", regex: null, icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/other.svg" },
+        { name: "其他", regex: null, icon: "https://raw.githubusercontent.com/clash-verge-rev/clash-verge-rev.github.io/refs/heads/main/docs/assets/icons/link.svg" },
     ];
 
     // 获取所有代理节点的名称
@@ -272,7 +271,7 @@ function overwriteProxyGroups(params) {
             type: "url-test",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
             "exclude-filter": "自动选择|手动选择", // 排除地区分组，避免循环引用
-            proxies: allProxies.length > 0 ? allProxies : ["DIRECT"],
+            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑，实现“直连不测速”
             hidden: true,
         },
         {
@@ -280,7 +279,7 @@ function overwriteProxyGroups(params) {
             type: "fallback",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/ambulance.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies.length > 0 ? allProxies : ["DIRECT"],
+            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑，实现“直连不测速”
             hidden: true,
         },
         {
@@ -289,7 +288,7 @@ function overwriteProxyGroups(params) {
             strategy: "consistent-hashing", // 基于请求域名或 IP 的哈希，同一目标将使用同一节点
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/balance.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies.length > 0 ? allProxies : ["DIRECT"],
+            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑
             hidden: true,
         },
         {
@@ -298,7 +297,7 @@ function overwriteProxyGroups(params) {
             strategy: "round-robin", // 轮流使用列表中的节点
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/merry_go.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies.length > 0 ? allProxies : ["DIRECT"],
+            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑
             hidden: true,
         },
         // 应用专用策略组
@@ -319,6 +318,12 @@ function overwriteProxyGroups(params) {
             type: "select",
             proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/youtube.svg",
+        },
+        {
+            name: "交易所",
+            type: "select",
+            proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
+            icon: "https://fastly.jsdelivr.net/gh/vadimmalykhin/binance-icons@main/crypto/btc.svg",
         },
         {
             name: "苹果服务",
@@ -426,7 +431,8 @@ function overwriteRules(params) {
         "Steam_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Steam_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Steam_no_ip.yaml" },
         "Stream_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Stream_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Stream_no_ip.yaml" },
         "Telegram_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Telegram_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Telegram_no_ip.yaml" },
-        "Douyin_no_ip": { ...regularUpdateAnchor, url: gxjxzgxPath + "PROXY/douyin.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/Douyin_no_ip.yaml" },
+        //"Douyin_no_ip": { ...regularUpdateAnchor, url: gxjxzgxPath + "PROXY/douyin.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/Douyin_no_ip.yaml" },
+        "ExchangeApps_no_ip": { ...regularUpdateAnchor, url: "https://raw.githubusercontent.com/gxjxzgx/clash_DIY/refs/heads/main/PROXY/ExchangeApps", path: "./ruleset/gxjxzgx/ExchangeApps_no_ip.yaml" },
     };
     
     // --- 规则排序 (Rule Order) ---
@@ -434,6 +440,7 @@ function overwriteRules(params) {
     
     // 1. 广告拦截规则 (最高优先级)
     const adNonipRules = [
+        "RULE-SET,ExchangeApps_no_ip,交易所",
         "RULE-SET,AdBlock_REIJI007,REJECT",
         "RULE-SET,Reject_no_ip,REJECT",
     ];
@@ -443,16 +450,18 @@ function overwriteRules(params) {
 
     // 3. 代理规则 (基于域名)
     const proxyNonipRules = [
+
         "RULE-SET,AI_no_ip,AI",
         "RULE-SET,SteamRegion_no_ip,Steam地区",
-        "RULE-SET,Steam_no_ip,代理模式",
-        "RULE-SET,CDN_domainset,代理模式",
-        "RULE-SET,CDN_no_ip,代理模式",
-        "RULE-SET,Douyin_no_ip,抖音",
+        //"RULE-SET,Douyin_no_ip,抖音",
+        "PROCESS-NAME,com.ss.android.ugc.aweme,抖音",//抖音包名
         "RULE-SET,Stream_no_ip,流媒体",
         "RULE-SET,Telegram_no_ip,电报消息",
         "RULE-SET,Apple_no_ip,苹果服务",
         "RULE-SET,Microsoft_no_ip,微软服务",
+        "RULE-SET,Steam_no_ip,代理模式",
+        "RULE-SET,CDN_domainset,代理模式",
+        "RULE-SET,CDN_no_ip,代理模式",
         "RULE-SET,Download_domainset,代理模式",
         "RULE-SET,Download_no_ip,代理模式",
         "RULE-SET,Global_no_ip,代理模式",
@@ -476,10 +485,10 @@ function overwriteRules(params) {
     const ipRules = [
         "RULE-SET,Reject_ip,REJECT",
         "RULE-SET,GoogleFCM_ip,GoogleFCM",
-        "RULE-SET,NetEaseMusic_ip,DIRECT",
-        "RULE-SET,SteamCN_ip,DIRECT",
         "RULE-SET,Telegram_ip,电报消息",
         "RULE-SET,Stream_ip,流媒体",
+        "RULE-SET,NetEaseMusic_ip,DIRECT",
+        "RULE-SET,SteamCN_ip,DIRECT",
         "RULE-SET,Domestic_ip,DIRECT",
         "RULE-SET,Lan_ip,DIRECT",
         "GEOIP,CN,DIRECT",          // 中国大陆 IP 直连

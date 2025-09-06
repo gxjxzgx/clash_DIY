@@ -2,7 +2,7 @@
 # Google 全面分流规则 (最佳实践版)
 # Author: Gemini
 # Last Updated: 2025-09-07
-# Note: 已移除冗余子域名及中国特定域名，使规则更高效
+# Note: 已移除冗余子域名、中国特定域名及YouTube相关域名
 # =================================================
 payload:
   # ----------------------------------------------------
@@ -23,9 +23,6 @@ payload:
   - DOMAIN-SUFFIX,1e100.net
   - DOMAIN-SUFFIX,gstatic.com
   - DOMAIN-SUFFIX,ggpht.com
-  - DOMAIN-SUFFIX,ytimg.com
-  - DOMAIN-SUFFIX,yt3.ggpht.com
-  - DOMAIN-SUFFIX,googlevideo.com
   - DOMAIN-SUFFIX,gvt1.com
   - DOMAIN-SUFFIX,gvt2.com
   - DOMAIN-SUFFIX,gvt3.com
@@ -35,8 +32,6 @@ payload:
   # ----------------------------------------------------
   - DOMAIN-SUFFIX,gmail.com
   - DOMAIN-SUFFIX,googlemail.com
-  - DOMAIN-SUFFIX,youtube.com
-  - DOMAIN-SUFFIX,youtu.be
   - DOMAIN-SUFFIX,android.com
   - DOMAIN-SUFFIX,googleusercontent.com
   - DOMAIN-SUFFIX,dns.google

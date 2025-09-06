@@ -1,0 +1,97 @@
+# =================================================
+# Google 全面分流规则 (最佳实践版)
+# Author: Gemini
+# Last Updated: 2025-09-07
+# Note: 已移除冗余子域名，使规则更高效
+# =================================================
+payload:
+  # ----------------------------------------------------
+  # 1. 主域 & 短网址
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,google.com
+  - DOMAIN-SUFFIX,google
+  - DOMAIN-SUFFIX,goog
+  - DOMAIN-SUFFIX,abc.xyz # Google 母公司 Alphabet
+  - DOMAIN-SUFFIX,g.co
+  - DOMAIN-SUFFIX,goo.gle
+  - DOMAIN-SUFFIX,g.page
+  - DOMAIN-SUFFIX,gle.com
+
+  # ----------------------------------------------------
+  # 2. 核心网络 & CDN
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,1e100.net
+  - DOMAIN-SUFFIX,gstatic.com
+  - DOMAIN-SUFFIX,ggpht.com
+  - DOMAIN-SUFFIX,ytimg.com
+  - DOMAIN-SUFFIX,yt3.ggpht.com
+  - DOMAIN-SUFFIX,googlevideo.com
+  - DOMAIN-SUFFIX,gvt1.com
+  - DOMAIN-SUFFIX,gvt2.com
+  - DOMAIN-SUFFIX,gvt3.com
+
+  # ----------------------------------------------------
+  # 3. 核心服务 & API
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,gmail.com
+  - DOMAIN-SUFFIX,googlemail.com
+  - DOMAIN-SUFFIX,youtube.com
+  - DOMAIN-SUFFIX,youtu.be
+  - DOMAIN-SUFFIX,android.com
+  - DOMAIN-SUFFIX,googleusercontent.com
+  - DOMAIN-SUFFIX,dns.google
+  - DOMAIN-SUFFIX,recaptcha.net
+  - DOMAIN-SUFFIX,googleplay.com
+  - DOMAIN-SUFFIX,googleapis.com
+  - DOMAIN-SUFFIX,googleapis.cn
+  - DOMAIN-SUFFIX,appspot.com
+  - DOMAIN-SUFFIX,firebaseio.com
+  - DOMAIN-SUFFIX,firebaseapp.com
+  - DOMAIN-SUFFIX,cloudfunctions.net
+  - DOMAIN-SUFFIX,cloudproxy.app
+  - DOMAIN-SUFFIX,googlecloud.com
+  - DOMAIN-SUFFIX,page.link
+
+  # ----------------------------------------------------
+  # 4. 广告 & 分析 (可选 REJECT)
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,googletagmanager.com
+  - DOMAIN-SUFFIX,googletagservices.com
+  - DOMAIN-SUFFIX,googlesyndication.com
+  - DOMAIN-SUFFIX,google-analytics.com
+  - DOMAIN-SUFFIX,doubleclick.net
+  - DOMAIN-SUFFIX,admob.com
+  - DOMAIN-SUFFIX,googleadservices.com
+
+  # ----------------------------------------------------
+  # 5. 旗下项目 & 开源
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,withgoogle.com
+  - DOMAIN-SUFFIX,googlesource.com
+  - DOMAIN-SUFFIX,ampproject.org
+  - DOMAIN-SUFFIX,chromium.org
+  - DOMAIN-SUFFIX,webrtc.org
+  - DOMAIN-SUFFIX,golang.org
+  - DOMAIN-SUFFIX,dart.dev
+  - DOMAIN-SUFFIX,flutter.dev
+  - DOMAIN-SUFFIX,fuchsia.dev
+  - DOMAIN-SUFFIX,material.io
+  - DOMAIN-SUFFIX,tensorflow.org
+  - DOMAIN-SUFFIX,tfhub.dev
+  - DOMAIN-SUFFIX,certificate-transparency.org
+
+  # ----------------------------------------------------
+  # 6. 其它子公司 & 服务
+  # ----------------------------------------------------
+  - DOMAIN-SUFFIX,blogspot.com
+  - DOMAIN-SUFFIX,blogger.com
+  - DOMAIN-SUFFIX,domains.google
+  - DOMAIN-SUFFIX,googledomains.com
+  - DOMAIN-SUFFIX,gpay.com
+  - DOMAIN-SUFFIX,nest.com
+  - DOMAIN-SUFFIX,waze.com
+  - DOMAIN-SUFFIX,waymo.com
+  - DOMAIN-SUFFIX,deepmind.com
+  - DOMAIN-SUFFIX,kaggle.com
+  - DOMAIN-SUFFIX,verily.com
+  - DOMAIN-SUFFIX,get.app

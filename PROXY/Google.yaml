@@ -9,7 +9,6 @@ payload:
   # 1. 主域 & 短网址
   # ----------------------------------------------------
   - DOMAIN-SUFFIX,google.com
-  - DOMAIN-SUFFIX,google.cn
   - DOMAIN-SUFFIX,google
   - DOMAIN-SUFFIX,goog
   - DOMAIN-SUFFIX,abc.xyz # Google 母公司 Alphabet

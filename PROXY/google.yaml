@@ -2,7 +2,7 @@
 # Google 全面分流规则 (最佳实践版)
 # Author: Gemini
 # Last Updated: 2025-09-07
-# Note: 已移除冗余子域名，使规则更高效
+# Note: 已移除冗余子域名及中国特定域名，使规则更高效
 # =================================================
 payload:
   # ----------------------------------------------------
@@ -43,7 +43,6 @@ payload:
   - DOMAIN-SUFFIX,recaptcha.net
   - DOMAIN-SUFFIX,googleplay.com
   - DOMAIN-SUFFIX,googleapis.com
-  - DOMAIN-SUFFIX,googleapis.cn
   - DOMAIN-SUFFIX,appspot.com
   - DOMAIN-SUFFIX,firebaseio.com
   - DOMAIN-SUFFIX,firebaseapp.com

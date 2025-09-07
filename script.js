@@ -1,7 +1,7 @@
 /**
  * @file Clash 配置文件动态生成脚本
  * @author YourName (可以替换为你的名字)
- * @version 2.2.1
+ * @version 2.5.0
  * @description
  * 该脚本用于动态生成和修改 Clash (Mihomo 内核) 配置文件。
  * 主要功能包括：
@@ -44,6 +44,7 @@ const AddCustomization = [
     "DOMAIN-KEYWORD,upai,代理模式",
     "DOMAIN-SUFFIX,ipinfo.io,代理模式",
     "DOMAIN-SUFFIX,ipdata.co,代理模式",
+    "PROCESS-NAME,org.zwanoo.android.speedtest,代理模式",//speed test包名
     "DOMAIN-SUFFIX,jianguoyun.com,DIRECT",
 
     // "DOMAIN-SUFFIX,900cha.com,代理模式", // 示例
@@ -187,6 +188,7 @@ function overwriteProxyGroups(params) {
         */
         // 兜底选项，用于匹配所有其他未分类的节点
         { name: "其他", regex: null, icon: "https://raw.githubusercontent.com/clash-verge-rev/clash-verge-rev.github.io/refs/heads/main/docs/assets/icons/link.svg" },
+
     ];
 
     // 获取所有代理节点的名称
@@ -221,10 +223,8 @@ function overwriteProxyGroups(params) {
     }
 
     // 2. 创建地区策略组
-    // 过滤出当前配置文件中实际存在的地区
     const availableRegions = countryRegions.filter(region => groupedProxies[region.name] && groupedProxies[region.name].length > 0);
     
-    // 为每个地区创建“自动选择”(fallback)策略组
     const autoProxyGroups = availableRegions.map(region => ({
         name: `${region.name} - 自动选择`,
         type: "fallback",
@@ -232,18 +232,16 @@ function overwriteProxyGroups(params) {
         interval: 300,
         tolerance: 50,
         proxies: groupedProxies[region.name],
-        hidden: true, // 在 UI 中默认隐藏
+        hidden: true,
     }));
     
-    // 为每个地区创建“手动选择”(select)策略组
     const manualProxyGroups = availableRegions.map(region => ({
         name: `${region.name} - 手动选择`,
         type: "select",
         proxies: groupedProxies[region.name],
-        icon: region.icon, // 为 Clash Verge 等客户端提供图标
+        icon: region.icon,
     }));
 
-    // 获取所有地区策略组的名称，用于后续引用
     const mainProxyGroupNames = availableRegions.flatMap(region => [
         `${region.name} - 自动选择`,
         `${region.name} - 手动选择`,
@@ -270,8 +268,8 @@ function overwriteProxyGroups(params) {
             name: "延迟优选",
             type: "url-test",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
-            "exclude-filter": "自动选择|手动选择", // 排除地区分组，避免循环引用
-            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑，实现“直连不测速”
+            "exclude-filter": "自动选择|手动选择",
+            proxies: allProxies,
             hidden: true,
         },
         {
@@ -279,28 +277,27 @@ function overwriteProxyGroups(params) {
             type: "fallback",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/ambulance.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑，实现“直连不测速”
+            proxies: allProxies,
             hidden: true,
         },
         {
             name: "负载均衡 (散列)",
             type: "load-balance",
-            strategy: "consistent-hashing", // 基于请求域名或 IP 的哈希，同一目标将使用同一节点
+            strategy: "consistent-hashing",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/balance.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑
+            proxies: allProxies,
             hidden: true,
         },
         {
             name: "负载均衡 (轮询)",
             type: "load-balance",
-            strategy: "round-robin", // 轮流使用列表中的节点
+            strategy: "round-robin",
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/merry_go.svg",
             "exclude-filter": "自动选择|手动选择",
-            proxies: allProxies, // 修改：移除无节点时回退到 DIRECT 的逻辑
+            proxies: allProxies,
             hidden: true,
         },
-        // 应用专用策略组
         {
             name: "电报消息",
             type: "select",
@@ -326,6 +323,12 @@ function overwriteProxyGroups(params) {
             icon: "https://fastly.jsdelivr.net/gh/vadimmalykhin/binance-icons@main/crypto/btc.svg",
         },
         {
+            name: "Google服务",
+            type: "select",
+            proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
+            icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/google.svg",
+        },
+        {
             name: "苹果服务",
             type: "select",
             proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
@@ -344,16 +347,17 @@ function overwriteProxyGroups(params) {
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/google.svg",
         },
         {
-            name: "Steam地区",
-            type: "select",
-            proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
-            icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/steam.svg",
-        },
-        {
             name: "抖音",
             type: "select",
             proxies: ["代理模式", "DIRECT", ...mainProxyGroupNames],
             icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/tiktok.svg",
+        },
+        // 应用专用策略组
+        {
+            name: "广告拦截",
+            type: "select",
+            proxies: ["REJECT", "DIRECT", "代理模式"],
+            icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/bug.svg",
         },
         {
             name: "漏网之鱼", // 用于匹配所有其他规则未覆盖的流量
@@ -375,26 +379,38 @@ function overwriteProxyGroups(params) {
  */
 function overwriteRules(params) {
     // --- 规则集 Provider 定义 ---
+
+    // 广告拦截规则集的更新配置 (24小时更新一次)
+    const adBlockUpdateAnchor = {
+        type: "http",
+        interval: 86400, // 24小时更新一次
+    };
+
     const fastUpdateAnchor = {
         type: "http",
-        interval: 1200, // 20 分钟更新一次
+        interval: 0, // 为 0 禁用更新
         behavior: "classical",
         format: "yaml",
     };
     const regularUpdateAnchor = {
         type: "http",
-        interval: 5400, // 90 分钟更新一次
+        interval: 0, // 为 0 禁用更新
         behavior: "classical",
         format: "yaml",
     };
 
     const realSeekPath = "https://raw.githubusercontent.com/RealSeek/Clash_Rule_DIY/refs/heads/mihomo/";
-    const gxjxzgxPath = "https://raw.githubusercontent.com/gxjxzgx/clash_DIY/main/";
-
+    
     // 规则集 Provider 列表
     const ruleProviders = {
         // --- 广告与跟踪拦截 (REJECT) ---
-        "AdBlock_REIJI007": { type: "http", interval: 1200, behavior: "domain", format: "text", url: "https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Sing-box/main/adblock_reject_domain.txt", path: "./ruleset/REIJI007/adblock_reject_domain.yaml" },
+        // 修复：更新为 blackmatrix7 的有效规则链接，并调整 behavior 和 format
+        "Advertising": { ...adBlockUpdateAnchor, behavior: "classical", format: "yaml", url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.yaml", path: "./ruleset/blackmatrix7/Advertising.yaml" },
+        "Privacy": { ...adBlockUpdateAnchor, behavior: "classical", format: "yaml", url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Privacy/Privacy.yaml", path: "./ruleset/blackmatrix7/Privacy.yaml" },
+
+        "AdBlock_REIJI007": { ...adBlockUpdateAnchor, behavior: "domain", format: "text", url: "https://raw.githubusercontent.com/REIJI007/AdBlock_Rule_For_Sing-box/main/adblock_reject_domain.txt", path: "./ruleset/REIJI007/adblock_reject_domain.yaml" },
+        
+        // 旧有规则集，更新间隔保持为0，可根据需要开启
         "Reject_ip": { ...fastUpdateAnchor, behavior: "ipcidr", url: realSeekPath + "REJECT/ip/Reject_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/REJECT/ip/Reject_ip.yaml" },
         "Reject_no_ip": { ...fastUpdateAnchor, url: realSeekPath + "REJECT/no_ip/Reject_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/REJECT/no_ip/Reject_no_ip.yaml" },
         
@@ -431,8 +447,8 @@ function overwriteRules(params) {
         "Steam_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Steam_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Steam_no_ip.yaml" },
         "Stream_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Stream_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Stream_no_ip.yaml" },
         "Telegram_no_ip": { ...regularUpdateAnchor, url: realSeekPath + "PROXY/no_ip/Telegram_no_ip.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/no_ip/Telegram_no_ip.yaml" },
-        //"Douyin_no_ip": { ...regularUpdateAnchor, url: gxjxzgxPath + "PROXY/douyin.yaml", path: "./ruleset/RealSeek/Clash_Rule_DIY/PROXY/Douyin_no_ip.yaml" },
         "ExchangeApps_no_ip": { ...regularUpdateAnchor, url: "https://raw.githubusercontent.com/gxjxzgx/clash_DIY/refs/heads/main/PROXY/ExchangeApps", path: "./ruleset/gxjxzgx/ExchangeApps_no_ip.yaml" },
+        "Google_no_ip": { ...regularUpdateAnchor, url: "https://raw.githubusercontent.com/gxjxzgx/clash_DIY/main/PROXY/google.yaml", path: "./ruleset/gxjxzgx/google.yaml" },
     };
     
     // --- 规则排序 (Rule Order) ---
@@ -440,9 +456,13 @@ function overwriteRules(params) {
     
     // 1. 广告拦截规则 (最高优先级)
     const adNonipRules = [
+        // 修复：更新规则集名称
+        "RULE-SET,Advertising,广告拦截",
+        "RULE-SET,Privacy,广告拦截",
+        "RULE-SET,AdBlock_REIJI007,广告拦截",
+        // 以下规则集可作为补充，默认不开启自动更新
         "RULE-SET,ExchangeApps_no_ip,交易所",
-        "RULE-SET,AdBlock_REIJI007,REJECT",
-        "RULE-SET,Reject_no_ip,REJECT",
+        "RULE-SET,Reject_no_ip,广告拦截",
     ];
 
     // 2. 用户自定义规则
@@ -450,16 +470,15 @@ function overwriteRules(params) {
 
     // 3. 代理规则 (基于域名)
     const proxyNonipRules = [
-
         "RULE-SET,AI_no_ip,AI",
-        "RULE-SET,SteamRegion_no_ip,Steam地区",
-        //"RULE-SET,Douyin_no_ip,抖音",
         "PROCESS-NAME,com.ss.android.ugc.aweme,抖音",//抖音包名
         "RULE-SET,Stream_no_ip,流媒体",
+        "RULE-SET,Google_no_ip,Google服务",
         "RULE-SET,Telegram_no_ip,电报消息",
         "RULE-SET,Apple_no_ip,苹果服务",
         "RULE-SET,Microsoft_no_ip,微软服务",
         "RULE-SET,Steam_no_ip,代理模式",
+        "RULE-SET,SteamRegion_no_ip,代理模式",
         "RULE-SET,CDN_domainset,代理模式",
         "RULE-SET,CDN_no_ip,代理模式",
         "RULE-SET,Download_domainset,代理模式",
@@ -483,10 +502,11 @@ function overwriteRules(params) {
 
     // 5. IP 规则 (域名规则匹配失败后，会检查目标 IP)
     const ipRules = [
-        "RULE-SET,Reject_ip,REJECT",
+        "RULE-SET,Reject_ip,广告拦截",
+        "RULE-SET,Stream_ip,流媒体",
         "RULE-SET,GoogleFCM_ip,GoogleFCM",
         "RULE-SET,Telegram_ip,电报消息",
-        "RULE-SET,Stream_ip,流媒体",
+
         "RULE-SET,NetEaseMusic_ip,DIRECT",
         "RULE-SET,SteamCN_ip,DIRECT",
         "RULE-SET,Domestic_ip,DIRECT",
@@ -497,7 +517,7 @@ function overwriteRules(params) {
         "MATCH,漏网之鱼",           // 兜底规则，所有未匹配的流量都将经过“漏网之鱼”策略组
     ];
 
-    // 6. 合并所有规则
+    // 6. 合び所有规则
     const rules = [...adNonipRules, ...customRules, ...proxyNonipRules, ...directNonipRules, ...ipRules];
     params.rules = rules;
     params["rule-providers"] = ruleProviders;
@@ -519,7 +539,6 @@ function overwriteDns(params) {
   const foreignNameservers = [
     //"https://1.1.1.1/dns-query",   // Cloudflare
     //"https://8.8.8.8/dns-query",   // Google
-    //"https://8.8.4.4/dns-query"    // Google 备用
     "https://dns.google/dns-query" 
   ];
 
@@ -585,7 +604,7 @@ function overwriteTunnel(params) {
         // 关键：DNS 劫持。将所有设备的 DNS 查询重定向到 Clash 的 DNS 服务器 (1053端口)
         // 必须与 `dns.listen` 配置的端口一致！
         "dns-hijack": [
-            "0.0.0.0/0:1053", // 劫持所有发往 1053 端口的 IPv4 流量
+            "0.0.0.0:1053", // 劫持所有发往 1053 端口的 IPv4 流量
             "::/0:1053"       // 劫持所有发往 1053 端口的 IPv6 流量
         ],
         

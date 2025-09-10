@@ -1,3 +1,0 @@
-git rm <文件名>
-git commit -m "remove empty dir"
-git push

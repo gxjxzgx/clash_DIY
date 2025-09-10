@@ -1,0 +1,25 @@
+payload:
+  # ================================================================
+  # Microsoft 中国大陆 (世纪互联 21Vianet)
+  # ================================================================
+  - DOMAIN-SUFFIX,azure.cn
+  - DOMAIN-SUFFIX,bing.cn
+  - DOMAIN-SUFFIX,chinacloudapi.cn
+  - DOMAIN-SUFFIX,chinacloudapp.cn
+  - DOMAIN-SUFFIX,chinacloudsites.cn
+  - DOMAIN-SUFFIX,dynamics.cn
+  - DOMAIN-SUFFIX,live.cn
+  - DOMAIN-SUFFIX,microsoft.com.cn
+  - DOMAIN-SUFFIX,microsoftonline.cn
+  - DOMAIN-SUFFIX,onmschina.cn
+  - DOMAIN-SUFFIX,office.cn
+  - DOMAIN-SUFFIX,office365.cn
+  - DOMAIN-SUFFIX,outlook.cn
+  - DOMAIN-SUFFIX,partner.microsoftonline.cn
+  - DOMAIN-SUFFIX,sharepoint.cn
+  - DOMAIN-SUFFIX,windows.com.cn
+  - DOMAIN-SUFFIX,windowsazure.cn
+
+  # Keyword Rules (大陆环境常见)
+  - DOMAIN-KEYWORD,microsoftonline.cn
+  - DOMAIN-KEYWORD,office.cn

@@ -1,0 +1,100 @@
+payload:
+  # ================================================================
+  # OpenAI (ChatGPT / Sora / DALL·E)
+  # ================================================================
+  - DOMAIN-KEYWORD,openai
+  - DOMAIN-SUFFIX,ai.com
+  - DOMAIN-SUFFIX,chatgpt.com
+  - DOMAIN-SUFFIX,openai.com
+  - DOMAIN-SUFFIX,oaistatic.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+
+  # Auth / Tracking
+  - DOMAIN-SUFFIX,auth0.com
+  - DOMAIN-SUFFIX,sentry.io
+  - DOMAIN-SUFFIX,intercom.io
+  - DOMAIN,gateway.ai.cloudflare.com
+
+  # ================================================================
+  # Google (Gemini / Vertex AI / DeepMind)
+  # ================================================================
+  - DOMAIN-SUFFIX,deepmind.com
+  - DOMAIN-SUFFIX,deepmind.google
+  - DOMAIN-SUFFIX,bard.google.com
+  - DOMAIN-SUFFIX,gemini.google.com
+  - DOMAIN-SUFFIX,notebooklm.google.com
+  - DOMAIN-SUFFIX,aistudio.google.com
+  - DOMAIN-SUFFIX,makersuite.google.com
+  - DOMAIN-SUFFIX,generativeai.google
+  - DOMAIN-SUFFIX,aiplatform.googleapis.com
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com
+
+  # ================================================================
+  # Microsoft (Copilot / Bing Chat / Office 365 AI)
+  # ================================================================
+  - DOMAIN-SUFFIX,copilot.microsoft.com
+  - DOMAIN-SUFFIX,bing.com
+  - DOMAIN-SUFFIX,edgeservices.bing.com
+  - DOMAIN-SUFFIX,office.com
+  - DOMAIN-SUFFIX,live.com
+
+  # ================================================================
+  # Anthropic (Claude)
+  # ================================================================
+  - DOMAIN-SUFFIX,claude.ai
+  - DOMAIN-SUFFIX,anthropic.com
+
+  # ================================================================
+  # Meta (Meta AI / Imagine)
+  # ================================================================
+  - DOMAIN-SUFFIX,meta.ai
+  - DOMAIN-SUFFIX,imagine.meta.com
+  - DOMAIN-SUFFIX,facebook.ai
+
+  # ================================================================
+  # X (Grok)
+  # ================================================================
+  - DOMAIN-SUFFIX,x.ai
+  - DOMAIN-KEYWORD,grok
+
+  # ================================================================
+  # Developer AI Tools (GitHub / JetBrains / etc.)
+  # ================================================================
+  - DOMAIN-SUFFIX,github.com
+  - DOMAIN-SUFFIX,githubassets.com
+  - DOMAIN-SUFFIX,githubusercontent.com
+  - DOMAIN-SUFFIX,github.copilot
+  - DOMAIN-SUFFIX,api.jetbrains.ai
+
+  # ================================================================
+  # Other Global AI Platforms
+  # ================================================================
+  # General AI / Search
+  - DOMAIN-SUFFIX,perplexity.ai
+  - DOMAIN-SUFFIX,poe.com
+  - DOMAIN-SUFFIX,huggingface.co
+  - DOMAIN-SUFFIX,huggingface.cloud
+  - DOMAIN-SUFFIX,jasper.ai
+  - DOMAIN-SUFFIX,character.ai
+  - DOMAIN-SUFFIX,you.com
+  - DOMAIN-SUFFIX,phind.com
+  - DOMAIN-SUFFIX,cohere.ai
+  - DOMAIN-SUFFIX,ai21.com
+  - DOMAIN-SUFFIX,runwayml.com
+
+  # Image & Art Generation
+  - DOMAIN-SUFFIX,midjourney.com
+  - DOMAIN-SUFFIX,stability.ai
+  - DOMAIN-SUFFIX,dreamstudio.ai
+  - DOMAIN-SUFFIX,leonardo.ai
+  - DOMAIN-SUFFIX,openart.ai
+  - DOMAIN-SUFFIX,clipdrop.co
+  - DOMAIN-SUFFIX,fal.ai
+  - DOMAIN-SUFFIX,scenario.com
+
+  # Music & Voice AI
+  - DOMAIN-SUFFIX,suno.ai
+  - DOMAIN-SUFFIX,elevenlabs.io
+  - DOMAIN-SUFFIX,voicemod.net
+  - DOMAIN-SUFFIX,soundraw.io
+  - DOMAIN-SUFFIX,boomy.com

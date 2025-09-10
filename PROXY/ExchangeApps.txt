@@ -1,0 +1,86 @@
+
+#================ 加密货币相关安卓应用包名 =================
+
+payload:
+
+#---------------- 交易所 Exchanges -----------------
+
+  - PROCESS-NAME,com.ascendex.app             # 顶峰交易所
+  - PROCESS-NAME,com.bibox.app                # Bibox 交易所
+  - PROCESS-NAME,com.binance.dev              # 币安
+  - PROCESS-NAME,com.binance.miner            # 币安矿池
+  - PROCESS-NAME,com.bitfinex.app             # 大B网
+  - PROCESS-NAME,com.bitflyer.app             # bitFlyer 交易所
+  - PROCESS-NAME,com.bitget.app               # Bitget 交易所
+  - PROCESS-NAME,com.bithumb.live             # Bithumb 交易所
+  - PROCESS-NAME,com.bitmart.app              # BitMart 交易所
+  - PROCESS-NAME,com.bitstamp.app             # Bitstamp 交易所
+  - PROCESS-NAME,com.bybit.app                # Bybit 交易所
+  - PROCESS-NAME,com.coinbase.android         # Coinbase 交易所
+  - PROCESS-NAME,com.coinex.app               # CoinEx 交易所
+  - PROCESS-NAME,com.coinone.android          # Coinone 交易所
+  - PROCESS-NAME,co.mona.android              # Crypto.com 交易所
+  - PROCESS-NAME,com.gateio.app               # 芝麻开门 Gate.io
+  - PROCESS-NAME,com.gemini.android           # 双子星 Gemini
+  - PROCESS-NAME,com.huobi.client             # 火币 HTX
+  - PROCESS-NAME,com.korbit.android           # Korbit 交易所
+  - PROCESS-NAME,com.kraken.invest            # Kraken K网
+  - PROCESS-NAME,com.kucoin.android           # 库币 KuCoin
+  - PROCESS-NAME,com.kucoinpro.android        # 库币 KuCoin Pro
+  - PROCESS-NAME,com.mexc.app                 # 抹茶 MEXC
+  - PROCESS-NAME,com.okcoin.app               # OKCoin 交易所
+  - PROCESS-NAME,com.okcoinpro.app            # OKCoin Pro
+  - PROCESS-NAME,com.okinc.okex.gp            # 欧易 OKX
+  - PROCESS-NAME,com.pionex.app               # 派网 Pionex
+  - PROCESS-NAME,com.poloniex.app             # P网 Poloniex
+  - PROCESS-NAME,com.upbit.android            # Upbit 交易所
+
+#---------------- 钱包 Wallets -----------------
+
+  - PROCESS-NAME,io.atomicwallet              # Atomic 钱包
+  - PROCESS-NAME,com.bitkeep.wallet           # Bitget 钱包（原 BitKeep）
+  - PROCESS-NAME,com.blockchainvault          # Blockchain Vault 钱包
+  - PROCESS-NAME,com.coinbase.android.wallet  # Coinbase 钱包
+  - PROCESS-NAME,com.coinomi.wallet           # Coinomi 钱包
+  - PROCESS-NAME,com.chainapsis.keplr         # Keplr 钱包（Cosmos 生态）
+  - PROCESS-NAME,exodusmovement.exodus        # Exodus 钱包
+  - PROCESS-NAME,im.token.app                 # imToken 钱包
+  - PROCESS-NAME,com.ledger.live              # Ledger 硬件钱包
+  - PROCESS-NAME,com.lobstr.android           # LOBSTR 钱包（Stellar 生态）
+  - PROCESS-NAME,com.mathwallet.android       # MathWallet 钱包
+  - PROCESS-NAME,io.metamask                  # 小狐狸钱包 MetaMask
+  - PROCESS-NAME,app.phantom                  # Phantom 钱包（Solana 生态）
+  - PROCESS-NAME,com.polybaselabs.wallet      # Polybase 钱包
+  - PROCESS-NAME,io.safepal.wallet            # SafePal 钱包
+  - PROCESS-NAME,com.solflare.mobile          # Solflare 钱包（Solana 生态）
+  - PROCESS-NAME,com.satoshilabs.trezor       # Trezor 硬件钱包
+  - PROCESS-NAME,vip.mytokenpocket            # TokenPocket 钱包
+  - PROCESS-NAME,com.wallet.crypto.trustapp   # Trust 钱包
+  - PROCESS-NAME,com.emurgo                   # Yoroi 钱包（Cardano 生态）
+
+#---------------- 行情/投资组合 Market_Portfolio -----------------
+
+  - PROCESS-NAME,com.blockfolio.blockfolio    # Blockfolio / FTX 行情追踪
+  - PROCESS-NAME,com.coingecko.coingecko      # CoinGecko 行情数据
+  - PROCESS-NAME,com.coinmarketcap.android    # CoinMarketCap 行情数据
+  - PROCESS-NAME,com.coinglass.android        # CoinGlass 衍生品数据
+  - PROCESS-NAME,com.delta.crypto             # Delta 资产追踪
+  - PROCESS-NAME,com.tradingview.tradingviewapp # TradingView 图表工具
+  - PROCESS-NAME,io.zerion.android            # Zerion DeFi 看板
+
+#---------------- DeFi / NFT -----------------
+
+  - PROCESS-NAME,io.opensea                   # OpenSea NFT 市场
+  - PROCESS-NAME,xyz.uniswap.wallet           # Uniswap 去中心化钱包
+
+#---------------- 社区/社交 Community_Social -----------------
+
+ 
+
+#---------------- 挖矿/其他工具 Mining_Other_Tools -----------------
+
+  - PROCESS-NAME,com.bitmain.antminer         # 蚂蚁矿机管理
+  - PROCESS-NAME,com.electroneum.mobile       # Electroneum 移动挖矿
+  - PROCESS-NAME,com.nicehash                 # NiceHash 算力市场
+  - PROCESS-NAME,com.pi.browser               # Pi Network 挖矿
+  - PROCESS-NAME,com.transferwise.android     # Wise 国际汇款

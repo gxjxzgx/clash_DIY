@@ -1,0 +1,310 @@
+ # ================================================================
+# Web3 Platinum Ultimate Rule-Set v1.1
+# Merged & Optimized from Community & AI Lists (CEX Enhanced)
+# Last Updated: 2025-08-19
+# ================================================================
+
+payload:
+
+# ----------------------------------------------------------------
+# 1. Domain TLDs (域名后缀)
+# ----------------------------------------------------------------
+# --- Web3 Native TLDs ---
+- DOMAIN-SUFFIX,eth
+- DOMAIN-SUFFIX,crypto
+- DOMAIN-SUFFIX,wallet
+- DOMAIN-SUFFIX,nft
+- DOMAIN-SUFFIX,nfts
+- DOMAIN-SUFFIX,x
+- DOMAIN-SUFFIX,bitcoin
+- DOMAIN-SUFFIX,dao
+- DOMAIN-SUFFIX,888
+- DOMAIN-SUFFIX,polygon
+- DOMAIN-SUFFIX,blockchain
+- DOMAIN-SUFFIX,zil
+- DOMAIN-SUFFIX,sol
+- DOMAIN-SUFFIX,bnb
+- DOMAIN-SUFFIX,arb
+- DOMAIN-SUFFIX,avax
+- DOMAIN-SUFFIX,tez
+- DOMAIN-SUFFIX,btc
+- DOMAIN-SUFFIX,sats
+- DOMAIN-SUFFIX,sei
+- DOMAIN-SUFFIX,sui
+- DOMAIN-SUFFIX,inj
+- DOMAIN-SUFFIX,web3
+- DOMAIN-SUFFIX,chain
+- DOMAIN-SUFFIX,token
+- DOMAIN-SUFFIX,airdrop
+- DOMAIN-SUFFIX,layer
+- DOMAIN-SUFFIX,lambo
+- DOMAIN-SUFFIX,metaverse
+- DOMAIN-SUFFIX,pudgy
+- DOMAIN-SUFFIX,unstoppable
+- DOMAIN-SUFFIX,moon
+- DOMAIN-SUFFIX,hodl
+- DOMAIN-SUFFIX,art
+- DOMAIN-SUFFIX,coin
+- DOMAIN-SUFFIX,aurora
+# --- Generic TLDs Heavily Used in Web3 ---
+- DOMAIN-SUFFIX,io
+- DOMAIN-SUFFIX,app
+- DOMAIN-SUFFIX,xyz
+- DOMAIN-SUFFIX,dev
+- DOMAIN-SUFFIX,tech
+- DOMAIN-SUFFIX,finance
+- DOMAIN-SUFFIX,money
+- DOMAIN-SUFFIX,games
+- DOMAIN-SUFFIX,network
+- DOMAIN-SUFFIX,exchange
+- DOMAIN-SUFFIX,capital
+- DOMAIN-SUFFIX,foundation
+- DOMAIN-SUFFIX,org
+- DOMAIN-SUFFIX,io
+- DOMAIN-SUFFIX,fi
+- DOMAIN-SUFFIX,global
+- DOMAIN-SUFFIX,studio
+- DOMAIN-SUFFIX,cloud
+- DOMAIN-SUFFIX,art
+- DOMAIN-SUFFIX,so
+- DOMAIN-SUFFIX,co
+- DOMAIN-SUFFIX,vc
+- DOMAIN-SUFFIX,gg
+- DOMAIN-SUFFIX,id
+- DOMAIN-SUFFIX,im
+- DOMAIN-SUFFIX,is
+- DOMAIN-SUFFIX,net
+- DOMAIN-SUFFIX,sh
+# --- Web3 Commerce TLDs ---
+- DOMAIN-SUFFIX,web
+- DOMAIN-SUFFIX,store
+- DOMAIN-SUFFIX,shop
+
+# ----------------------------------------------------------------
+# 2. Centralized Exchanges (CEX) (中心化交易所) - (已更新)
+# ----------------------------------------------------------------
+- DOMAIN-SUFFIX,binance.com
+- DOMAIN-SUFFIX,binance.org
+- DOMAIN-SUFFIX,coinbase.com
+- DOMAIN-SUFFIX,kraken.com
+- DOMAIN-SUFFIX,okx.com
+- DOMAIN-SUFFIX,bybit.com
+- DOMAIN-SUFFIX,kucoin.com
+- DOMAIN-SUFFIX,gate.io
+- DOMAIN-SUFFIX,mexc.com
+- DOMAIN-SUFFIX,huobi.com
+- DOMAIN-SUFFIX,bitget.com
+- DOMAIN-SUFFIX,bitfinex.com
+- DOMAIN-SUFFIX,crypto.com
+- DOMAIN-SUFFIX,gemini.com
+- DOMAIN-SUFFIX,bitstamp.net
+- DOMAIN-SUFFIX,upbit.com
+- DOMAIN-SUFFIX,bithumb.com
+
+# ----------------------------------------------------------------
+# 3. Core Infrastructure (核心基础设施)
+# ----------------------------------------------------------------
+# --- RPC & API Providers ---
+- DOMAIN-SUFFIX,infura.io
+- DOMAIN-SUFFIX,alchemy.com
+- DOMAIN-SUFFIX,quicknode.com
+- DOMAIN-SUFFIX,ankr.com
+- DOMAIN-SUFFIX,chainstack.com
+- DOMAIN-SUFFIX,pokt.network
+- DOMAIN-SUFFIX,nodereal.io
+- DOMAIN-SUFFIX,getblock.io
+- DOMAIN-SUFFIX,lava.network
+- DOMAIN-SUFFIX,blockdaemon.com
+- DOMAIN-SUFFIX,thirdweb.com
+# --- Oracles ---
+- DOMAIN-SUFFIX,chain.link
+- DOMAIN-SUFFIX,pyth.network
+- DOMAIN-SUFFIX,bandprotocol.com
+# --- Decentralized Storage (DePIN) ---
+- DOMAIN-SUFFIX,ipfs.io
+- DOMAIN-SUFFIX,ipfs.tech
+- DOMAIN-SUFFIX,dweb.link
+- DOMAIN-SUFFIX,gateway.pinata.cloud
+- DOMAIN-SUFFIX,arweave.net
+- DOMAIN-SUFFIX,arweave.org
+- DOMAIN-SUFFIX,filecoin.io
+- DOMAIN-SUFFIX,storj.io
+- DOMAIN-SUFFIX,siasky.net
+# --- Indexing & Data ---
+- DOMAIN-SUFFIX,thegraph.com
+- DOMAIN-SUFFIX,covalenthq.com
+
+# ----------------------------------------------------------------
+# 4. L2, Sidechains & Bridges (L2、侧链与跨链桥)
+# ----------------------------------------------------------------
+# --- L2 & Sidechains ---
+- DOMAIN-SUFFIX,arbitrum.io
+- DOMAIN-SUFFIX,optimism.io
+- DOMAIN-SUFFIX,zksync.io
+- DOMAIN-SUFFIX,starknet.io
+- DOMAIN-SUFFIX,polygon.technology
+- DOMAIN-SUFFIX,linea.build
+- DOMAIN-SUFFIX,scroll.io
+- DOMAIN-SUFFIX,mantle.xyz
+- DOMAIN-SUFFIX,metis.io
+- DOMAIN-SUFFIX,base.org
+# --- Bridges ---
+- DOMAIN-SUFFIX,wormhole.com
+- DOMAIN-SUFFIX,portalbridge.com
+- DOMAIN-SUFFIX,layerzero.network
+- DOMAIN-SUFFIX,hop.exchange
+- DOMAIN-SUFFIX,stargate.finance
+- DOMAIN-SUFFIX,across.to
+- DOMAIN-SUFFIX,orbiter.finance
+- DOMAIN-SUFFIX,bridge.walletconnect.org
+
+# ----------------------------------------------------------------
+# 5. DeFi (去中心化金融)
+# ----------------------------------------------------------------
+- DOMAIN-KEYWORD,uniswap
+- DOMAIN-SUFFIX,sushiswap.fi
+- DOMAIN-SUFFIX,pancakeswap.finance
+- DOMAIN-SUFFIX,aave.com
+- DOMAIN-SUFFIX,compound.finance
+- DOMAIN-SUFFIX,curve.fi
+- DOMAIN-SUFFIX,balancer.fi
+- DOMAIN-SUFFIX,makerdao.com
+- DOMAIN-SUFFIX,lido.fi
+- DOMAIN-SUFFIX,rocketpool.net
+- DOMAIN-SUFFIX,eigenlayer.xyz
+- DOMAIN-SUFFIX,pendle.finance
+- DOMAIN-SUFFIX,yearn.finance
+- DOMAIN-SUFFIX,frax.finance
+- DOMAIN-SUFFIX,dydx.exchange
+- DOMAIN-SUFFIX,gmx.io
+- DOMAIN-SUFFIX,synthetix.io
+- DOMAIN-SUFFIX,1inch.io
+- DOMAIN-SUFFIX,venus.io
+- DOMAIN-SUFFIX,raydium.io
+- DOMAIN-SUFFIX,radiant.capital
+- DOMAIN-SUFFIX,spark.fi
+
+# ----------------------------------------------------------------
+# 6. NFT, Gaming & Metaverse (NFT、游戏与元宇宙)
+# ----------------------------------------------------------------
+# --- Markets & Aggregators ---
+- DOMAIN-SUFFIX,opensea.io
+- DOMAIN-SUFFIX,blur.io
+- DOMAIN-SUFFIX,x2y2.io
+- DOMAIN-SUFFIX,looksrare.org
+- DOMAIN-SUFFIX,magiceden.io
+- DOMAIN-SUFFIX,rarible.com
+- DOMAIN-SUFFIX,foundation.app
+- DOMAIN-SUFFIX,niftygateway.com
+- DOMAIN-SUFFIX,sudoswap.xyz
+# --- Infrastructure & Key Projects ---
+- DOMAIN-SUFFIX,zora.co
+- DOMAIN-SUFFIX,sound.xyz
+- DOMAIN-SUFFIX,artblocks.io
+- DOMAIN-SUFFIX,manifold.xyz
+- DOMAIN-SUFFIX,audius.co
+- DOMAIN-SUFFIX,yuga.com
+- DOMAIN-SUFFIX,pudgypenguins.com
+# --- Gaming / Metaverse ---
+- DOMAIN-SUFFIX,axieinfinity.com
+- DOMAIN-SUFFIX,decentraland.org
+- DOMAIN-SUFFIX,sandbox.game
+- DOMAIN-SUFFIX,staratlas.com
+- DOMAIN-SUFFIX,illuvium.io
+- DOMAIN-SUFFIX,gala.games
+- DOMAIN-SUFFIX,stepn.com
+- DOMAIN-SUFFIX,bigtime.gg
+- DOMAIN-SUFFIX,immutable.com
+- DOMAIN-SUFFIX,meritcircle.io
+
+# ----------------------------------------------------------------
+# 7. Wallets & Security (钱包与安全)
+# ----------------------------------------------------------------
+# --- Software Wallets ---
+- DOMAIN-SUFFIX,metamask.io
+- DOMAIN-SUFFIX,trustwallet.com
+- DOMAIN-SUFFIX,phantom.app
+- DOMAIN-SUFFIX,rabby.io
+- DOMAIN-SUFFIX,rainbow.me
+- DOMAIN-SUFFIX,argent.xyz
+- DOMAIN-SUFFIX,safe.global
+- DOMAIN-SUFFIX,token.im
+- DOMAIN-SUFFIX,coinbasewallet.com
+# --- Hardware Wallets ---
+- DOMAIN-SUFFIX,ledger.com
+- DOMAIN-SUFFIX,trezor.io
+# --- Security & Auditing ---
+- DOMAIN-SUFFIX,consensys.io
+- DOMAIN-SUFFIX,openzeppelin.com
+- DOMAIN-SUFFIX,certik.com
+- DOMAIN-SUFFIX,trailofbits.com
+- DOMAIN-SUFFIX,peckshield.com
+- DOMAIN-SUFFIX,slowmist.com
+- DOMAIN-SUFFIX,immunefi.com
+
+# ----------------------------------------------------------------
+# 8. Social, DAO & Identity (社交、DAO与身份)
+# ----------------------------------------------------------------
+# --- Social & Content ---
+- DOMAIN-SUFFIX,lens.xyz
+- DOMAIN-SUFFIX,farcaster.xyz
+- DOMAIN-SUFFIX,warpcast.com
+- DOMAIN-SUFFIX,cyber.co
+- DOMAIN-SUFFIX,mirror.xyz
+- DOMAIN-SUFFIX,rss3.io
+# --- Identity & Reputation ---
+- DOMAIN-SUFFIX,ens.domains
+- DOMAIN-SUFFIX,galxe.com
+- DOMAIN-SUFFIX,questn.com
+- DOMAIN-SUFFIX,poap.xyz
+# --- DAO ---
+- DOMAIN-SUFFIX,snapshot.org
+- DOMAIN-SUFFIX,aragon.org
+- DOMAIN-SUFFIX,daostack.io
+- DOMAIN-SUFFIX,daohaus.club
+- DOMAIN-SUFFIX,tally.xyz
+- DOMAIN-SUFFIX,juicebox.money
+- DOMAIN-SUFFIX,gnosis.io
+
+# ----------------------------------------------------------------
+# 9. Information, Tools & Data (信息、工具与数据)
+# ----------------------------------------------------------------
+# --- Portfolio Trackers ---
+- DOMAIN-SUFFIX,zerion.io
+- DOMAIN-SUFFIX,zapper.xyz
+- DOMAIN-SUFFIX,debank.com
+# --- Analytics & Data ---
+- DOMAIN-SUFFIX,dune.com
+- DOMAIN-SUFFIX,nansen.ai
+- DOMAIN-SUFFIX,defillama.com
+- DOMAIN-SUFFIX,tokenterminal.com
+# --- Block Explorers ---
+- DOMAIN-SUFFIX,etherscan.io
+- DOMAIN-SUFFIX,bscscan.com
+- DOMAIN-SUFFIX,polygonscan.com
+- DOMAIN-SUFFIX,arbiscan.io
+- DOMAIN-SUFFIX,optimistic.etherscan.io
+- DOMAIN-SUFFIX,snowtrace.io
+- DOMAIN-SUFFIX,solscan.io
+- DOMAIN-SUFFIX,explorer.solana.com
+- DOMAIN-SUFFIX,tronscan.org
+- DOMAIN-SUFFIX,celoscan.io
+- DOMAIN-SUFFIX,blockchair.com
+- DOMAIN-SUFFIX,blockscan.com
+- DOMAIN-SUFFIX,l2scan.co
+- DOMAIN-SUFFIX,solana.fm
+# --- Developer Tools ---
+- DOMAIN-SUFFIX,hardhat.org
+- DOMAIN-SUFFIX,foundry.sh
+- DOMAIN-SUFFIX,trufflesuite.com
+- DOMAIN-SUFFIX,remix-project.org
+- DOMAIN-SUFFIX,tenderly.co
+# --- Web3 Media & News ---
+- DOMAIN-SUFFIX,coindesk.com
+- DOMAIN-SUFFIX,theblockcrypto.com
+- DOMAIN-SUFFIX,decrypt.co
+- DOMAIN-SUFFIX,cointelegraph.com
+- DOMAIN-SUFFIX,bankless.com
+# --- Launchpads ---
+- DOMAIN-SUFFIX,daomaker.com
+- DOMAIN-SUFFIX,poolz.finance

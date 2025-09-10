@@ -3,13 +3,13 @@ payload:
   # OpenAI (ChatGPT / Sora / etc.)
   # ----------------------------------------------------------------
   - DOMAIN-KEYWORD,openai
-  - DOMAIN-SUFFIX,ai.com # OpenAI owned
-  - DOMAIN-SUFFIX,chat.com # OpenAI owned
+  - DOMAIN-SUFFIX,ai.com
+  - DOMAIN-SUFFIX,chat.com
   - DOMAIN-SUFFIX,chatgpt.com
   - DOMAIN-SUFFIX,openai.com
   - DOMAIN-SUFFIX,oaistatic.com
   - DOMAIN-SUFFIX,oaiusercontent.com
-  # OpenAI Dependencies (Auth, Error Tracking, etc.)
+  # OpenAI Dependencies
   - DOMAIN-SUFFIX,auth0.com
   - DOMAIN-SUFFIX,sentry.io
   - DOMAIN-SUFFIX,intercom.io
@@ -39,8 +39,10 @@ payload:
   # Microsoft (Copilot / Bing Chat)
   # ----------------------------------------------------------------
   - DOMAIN-SUFFIX,copilot.microsoft.com
-  - DOMAIN-SUFFIX,bing.com # For Copilot features in Bing
+  - DOMAIN-SUFFIX,bing.com
   - DOMAIN-SUFFIX,edgeservices.bing.com
+  - DOMAIN-SUFFIX,office.com # Office Copilot
+  - DOMAIN-SUFFIX,live.com   # MS login auth
 
   # ----------------------------------------------------------------
   # Anthropic (Claude)
@@ -53,6 +55,7 @@ payload:
   # ----------------------------------------------------------------
   - DOMAIN-SUFFIX,meta.ai
   - DOMAIN-SUFFIX,imagine.meta.com
+  - DOMAIN-SUFFIX,facebook.ai
 
   # ----------------------------------------------------------------
   # X (Grok)
@@ -62,9 +65,12 @@ payload:
   - PROCESS-NAME,grok
 
   # ----------------------------------------------------------------
-  # Developer AI Tools (GitHub, JetBrains)
+  # Developer AI Tools
   # ----------------------------------------------------------------
   - DOMAIN-KEYWORD,copilot
+  - DOMAIN-SUFFIX,github.com # GitHub Copilot
+  - DOMAIN-SUFFIX,githubassets.com
+  - DOMAIN-SUFFIX,githubusercontent.com
   - DOMAIN-SUFFIX,github.copilot
   - DOMAIN-SUFFIX,api.jetbrains.ai
 
@@ -76,9 +82,15 @@ payload:
   - DOMAIN-SUFFIX,poe.com
   - DOMAIN-SUFFIX,huggingface.co
   - DOMAIN-SUFFIX,huggingface.cloud
-  - DOMAIN-SUFFIX,kimi.ai # Moonshot AI
+  - DOMAIN-SUFFIX,kimi.ai
   - DOMAIN-SUFFIX,dify.ai
   - DOMAIN-SUFFIX,jasper.ai
+  - DOMAIN-SUFFIX,character.ai
+  - DOMAIN-SUFFIX,you.com
+  - DOMAIN-SUFFIX,phind.com
+  - DOMAIN-SUFFIX,cohere.ai
+  - DOMAIN-SUFFIX,ai21.com
+  - DOMAIN-SUFFIX,runwayml.com
   # Image & Art
   - DOMAIN-SUFFIX,midjourney.com
   - DOMAIN-SUFFIX,stability.ai
@@ -86,6 +98,11 @@ payload:
   - DOMAIN-SUFFIX,leonardo.ai
   - DOMAIN-SUFFIX,openart.ai
   - DOMAIN-SUFFIX,clipdrop.co
+  - DOMAIN-SUFFIX,fal.ai
+  - DOMAIN-SUFFIX,scenario.com
   # Music & Voice
   - DOMAIN-SUFFIX,suno.ai
   - DOMAIN-SUFFIX,elevenlabs.io
+  - DOMAIN-SUFFIX,voicemod.net
+  - DOMAIN-SUFFIX,soundraw.io
+  - DOMAIN-SUFFIX,boomy.com

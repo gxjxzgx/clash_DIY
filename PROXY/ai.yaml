@@ -9,7 +9,7 @@ payload:
   - DOMAIN-SUFFIX,oaistatic.com
   - DOMAIN-SUFFIX,oaiusercontent.com
 
-  # Auth / Tracking
+  # Auth / Tracking for OpenAI
   - DOMAIN-SUFFIX,auth0.com
   - DOMAIN-SUFFIX,sentry.io
   - DOMAIN-SUFFIX,intercom.io
@@ -30,13 +30,15 @@ payload:
   - DOMAIN-SUFFIX,generativelanguage.googleapis.com
 
   # ================================================================
-  # Microsoft (Copilot / Bing Chat / Office 365 AI)
+  # Microsoft (Copilot / Bing Chat / Azure AI)
   # ================================================================
   - DOMAIN-SUFFIX,copilot.microsoft.com
   - DOMAIN-SUFFIX,bing.com
   - DOMAIN-SUFFIX,edgeservices.bing.com
   - DOMAIN-SUFFIX,office.com
   - DOMAIN-SUFFIX,live.com
+  - DOMAIN,ai.azure.com
+  - DOMAIN-SUFFIX,cognitiveservices.azure.com
 
   # ================================================================
   # Anthropic (Claude)
@@ -65,12 +67,17 @@ payload:
   - DOMAIN-SUFFIX,githubusercontent.com
   - DOMAIN-SUFFIX,github.copilot
   - DOMAIN-SUFFIX,api.jetbrains.ai
+  - DOMAIN-SUFFIX,replit.com # Replit Ghostwriter
+  - DOMAIN-SUFFIX,cursor.sh # AI-first Code Editor
+  - DOMAIN-SUFFIX,v0.dev # Vercel Generative UI
 
   # ================================================================
-  # Other Global AI Platforms
+  # 其他全球 AI 平台 (Other Global AI Platforms)
   # ================================================================
   # General AI / Search
   - DOMAIN-SUFFIX,perplexity.ai
+  - DOMAIN-SUFFIX,pi.ai # Inflection AI
+  - DOMAIN-SUFFIX,inflection.ai
   - DOMAIN-SUFFIX,poe.com
   - DOMAIN-SUFFIX,huggingface.co
   - DOMAIN-SUFFIX,huggingface.cloud
@@ -80,9 +87,9 @@ payload:
   - DOMAIN-SUFFIX,phind.com
   - DOMAIN-SUFFIX,cohere.ai
   - DOMAIN-SUFFIX,ai21.com
-  - DOMAIN-SUFFIX,runwayml.com
+  - DOMAIN-SUFFIX,arxiv.org # AI research papers
 
-  # Image & Art Generation
+  # Image, Video & 3D Generation
   - DOMAIN-SUFFIX,midjourney.com
   - DOMAIN-SUFFIX,stability.ai
   - DOMAIN-SUFFIX,dreamstudio.ai
@@ -91,6 +98,11 @@ payload:
   - DOMAIN-SUFFIX,clipdrop.co
   - DOMAIN-SUFFIX,fal.ai
   - DOMAIN-SUFFIX,scenario.com
+  - DOMAIN-SUFFIX,runwayml.com
+  - DOMAIN-SUFFIX,pika.art # Video Generation
+  - DOMAIN-SUFFIX,luma.ai # Luma Labs (Dream Machine)
+  - DOMAIN-SUFFIX,lumalabs.ai
+  - DOMAIN-SUFFIX,krea.ai # Real-time image generation
 
   # Music & Voice AI
   - DOMAIN-SUFFIX,suno.ai

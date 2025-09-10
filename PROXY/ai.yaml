@@ -1,112 +1,73 @@
 payload:
-  # ================================================================
-  # OpenAI (ChatGPT / Sora / DALL·E)
-  # ================================================================
-  - DOMAIN-KEYWORD,openai
-  - DOMAIN-SUFFIX,ai.com
-  - DOMAIN-SUFFIX,chatgpt.com
-  - DOMAIN-SUFFIX,openai.com
-  - DOMAIN-SUFFIX,oaistatic.com
-  - DOMAIN-SUFFIX,oaiusercontent.com
-
-  # Auth / Tracking for OpenAI
-  - DOMAIN-SUFFIX,auth0.com
-  - DOMAIN-SUFFIX,sentry.io
-  - DOMAIN-SUFFIX,intercom.io
-  - DOMAIN,gateway.ai.cloudflare.com
-
-  # ================================================================
-  # Google (Gemini / Vertex AI / DeepMind)
-  # ================================================================
+  # Google (Gemini / Bard / NotebookLM / DeepMind)
+  - DOMAIN-SUFFIX,aiplatform.googleapis.com
+  - DOMAIN-SUFFIX,aistudio.google.com
+  - DOMAIN-SUFFIX,bard.google.com
   - DOMAIN-SUFFIX,deepmind.com
   - DOMAIN-SUFFIX,deepmind.google
-  - DOMAIN-SUFFIX,bard.google.com
   - DOMAIN-SUFFIX,gemini.google.com
-  - DOMAIN-SUFFIX,notebooklm.google.com
-  - DOMAIN-SUFFIX,aistudio.google.com
-  - DOMAIN-SUFFIX,makersuite.google.com
   - DOMAIN-SUFFIX,generativeai.google
-  - DOMAIN-SUFFIX,aiplatform.googleapis.com
   - DOMAIN-SUFFIX,generativelanguage.googleapis.com
+  - DOMAIN-SUFFIX,geller-pa.googleapis.com
+  - DOMAIN-SUFFIX,makersuite.google.com
+  - DOMAIN-SUFFIX,notebooklm.google
+  - DOMAIN-SUFFIX,notebooklm.google.com
+  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
+  - DOMAIN,ai.google.dev
+  - DOMAIN,alkalicore-pa.clients6.google.com
+  - DOMAIN,alkalimakersuite-pa.clients6.google.com
 
-  # ================================================================
-  # Microsoft (Copilot / Bing Chat / Azure AI)
-  # ================================================================
-  - DOMAIN-SUFFIX,copilot.microsoft.com
+  # OpenAI (ChatGPT)
+  - DOMAIN-KEYWORD,openai
+  - DOMAIN-SUFFIX,ai.com
+  - DOMAIN-SUFFIX,chat.com
+  - DOMAIN-SUFFIX,chatgpt.com
+  - DOMAIN-SUFFIX,oaiusercontent.com
+  - DOMAIN-SUFFIX,oaistatic.com
+
+  # Microsoft (Copilot / Bing)
   - DOMAIN-SUFFIX,bing.com
-  - DOMAIN-SUFFIX,edgeservices.bing.com
-  - DOMAIN-SUFFIX,office.com
-  - DOMAIN-SUFFIX,live.com
-  - DOMAIN,ai.azure.com
-  - DOMAIN-SUFFIX,cognitiveservices.azure.com
+  - DOMAIN-SUFFIX,copilot.microsoft.com
 
-  # ================================================================
   # Anthropic (Claude)
-  # ================================================================
-  - DOMAIN-SUFFIX,claude.ai
   - DOMAIN-SUFFIX,anthropic.com
+  - DOMAIN-SUFFIX,claude.ai
 
-  # ================================================================
-  # Meta (Meta AI / Imagine)
-  # ================================================================
-  - DOMAIN-SUFFIX,meta.ai
-  - DOMAIN-SUFFIX,imagine.meta.com
-  - DOMAIN-SUFFIX,facebook.ai
-
-  # ================================================================
-  # X (Grok)
-  # ================================================================
-  - DOMAIN-SUFFIX,x.ai
+  # xAI (Grok)
   - DOMAIN-KEYWORD,grok
+  - DOMAIN-SUFFIX,grok.com
+  - DOMAIN-SUFFIX,x.ai
+  - PROCESS-NAME,grok
 
-  # ================================================================
-  # Developer AI Tools (GitHub / JetBrains / etc.)
-  # ================================================================
-  - DOMAIN-SUFFIX,github.com
-  - DOMAIN-SUFFIX,githubassets.com
-  - DOMAIN-SUFFIX,githubusercontent.com
-  - DOMAIN-SUFFIX,github.copilot
-  - DOMAIN-SUFFIX,api.jetbrains.ai
-  - DOMAIN-SUFFIX,replit.com # Replit Ghostwriter
-  - DOMAIN-SUFFIX,cursor.sh # AI-first Code Editor
-  - DOMAIN-SUFFIX,v0.dev # Vercel Generative UI
+  # Meta AI
+  - DOMAIN-SUFFIX,meta.ai
 
-  # ================================================================
-  # 其他全球 AI 平台 (Other Global AI Platforms)
-  # ================================================================
-  # General AI / Search
+  # Perplexity AI
   - DOMAIN-SUFFIX,perplexity.ai
-  - DOMAIN-SUFFIX,pi.ai # Inflection AI
-  - DOMAIN-SUFFIX,inflection.ai
+
+  # Poe
   - DOMAIN-SUFFIX,poe.com
-  - DOMAIN-SUFFIX,huggingface.co
-  - DOMAIN-SUFFIX,huggingface.cloud
-  - DOMAIN-SUFFIX,jasper.ai
-  - DOMAIN-SUFFIX,character.ai
-  - DOMAIN-SUFFIX,you.com
-  - DOMAIN-SUFFIX,phind.com
-  - DOMAIN-SUFFIX,cohere.ai
-  - DOMAIN-SUFFIX,ai21.com
-  - DOMAIN-SUFFIX,arxiv.org # AI research papers
 
-  # Image, Video & 3D Generation
-  - DOMAIN-SUFFIX,midjourney.com
-  - DOMAIN-SUFFIX,stability.ai
-  - DOMAIN-SUFFIX,dreamstudio.ai
-  - DOMAIN-SUFFIX,leonardo.ai
-  - DOMAIN-SUFFIX,openart.ai
+  # 图像与多媒体生成 (Image & Multimedia Generation)
   - DOMAIN-SUFFIX,clipdrop.co
-  - DOMAIN-SUFFIX,fal.ai
-  - DOMAIN-SUFFIX,scenario.com
-  - DOMAIN-SUFFIX,runwayml.com
-  - DOMAIN-SUFFIX,pika.art # Video Generation
-  - DOMAIN-SUFFIX,luma.ai # Luma Labs (Dream Machine)
-  - DOMAIN-SUFFIX,lumalabs.ai
-  - DOMAIN-SUFFIX,krea.ai # Real-time image generation
+  - DOMAIN-SUFFIX,elevenlabs.io # 音频
+  - DOMAIN-SUFFIX,leonardo.ai
+  - DOMAIN-SUFFIX,midjourney.com
+  - DOMAIN-SUFFIX,openart.ai
+  - DOMAIN-SUFFIX,pika.art # 视频
+  - DOMAIN-SUFFIX,runwayml.com # 视频
+  - DOMAIN-SUFFIX,stability.ai
+  - DOMAIN-SUFFIX,suno.ai # 音乐
 
-  # Music & Voice AI
-  - DOMAIN-SUFFIX,suno.ai
-  - DOMAIN-SUFFIX,elevenlabs.io
-  - DOMAIN-SUFFIX,voicemod.net
-  - DOMAIN-SUFFIX,soundraw.io
-  - DOMAIN-SUFFIX,boomy.com
+  # 其他 AI 聊天与效率工具 (Other AI Chat & Productivity)
+  - DOMAIN-SUFFIX,character.ai
+  - DOMAIN-SUFFIX,huggingface.co
+  - DOMAIN-SUFFIX,jasper.ai
+  - DOMAIN-SUFFIX,mistral.ai
+  - DOMAIN-SUFFIX,notion.so # Notion AI
+  - DOMAIN-SUFFIX,phind.com
+  
+  # AI 平台与开发者服务 (AI Platforms & Developer Services)
+  - DOMAIN-SUFFIX,api.jetbrains.ai
+  - DOMAIN-SUFFIX,dify.ai
+  - DOMAIN,gateway.ai.cloudflare.com

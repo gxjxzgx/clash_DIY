@@ -1,89 +1,79 @@
 payload:
-  # ----------------------------------------------------------------
-  # OpenAI (ChatGPT / Sora / etc.)
-  # ----------------------------------------------------------------
+  # ================================================================
+  # OpenAI (ChatGPT / Sora / DALL·E)
+  # ================================================================
   - DOMAIN-KEYWORD,openai
   - DOMAIN-SUFFIX,ai.com
-  - DOMAIN-SUFFIX,chat.com
   - DOMAIN-SUFFIX,chatgpt.com
   - DOMAIN-SUFFIX,openai.com
   - DOMAIN-SUFFIX,oaistatic.com
   - DOMAIN-SUFFIX,oaiusercontent.com
-  # OpenAI Dependencies
+
+  # Auth / Tracking
   - DOMAIN-SUFFIX,auth0.com
   - DOMAIN-SUFFIX,sentry.io
   - DOMAIN-SUFFIX,intercom.io
   - DOMAIN,gateway.ai.cloudflare.com
 
-  # ----------------------------------------------------------------
-  # Google (Gemini / Vertex AI / etc.)
-  # ----------------------------------------------------------------
+  # ================================================================
+  # Google (Gemini / Vertex AI / DeepMind)
+  # ================================================================
   - DOMAIN-SUFFIX,deepmind.com
   - DOMAIN-SUFFIX,deepmind.google
   - DOMAIN-SUFFIX,bard.google.com
   - DOMAIN-SUFFIX,gemini.google.com
-  - DOMAIN-SUFFIX,notebooklm.google
   - DOMAIN-SUFFIX,notebooklm.google.com
   - DOMAIN-SUFFIX,aistudio.google.com
   - DOMAIN-SUFFIX,makersuite.google.com
   - DOMAIN-SUFFIX,generativeai.google
   - DOMAIN-SUFFIX,aiplatform.googleapis.com
-  - DOMAIN-SUFFIX,geller-pa.googleapis.com
   - DOMAIN-SUFFIX,generativelanguage.googleapis.com
-  - DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
-  - DOMAIN,ai.google.dev
-  - DOMAIN,alkalicore-pa.clients6.google.com
-  - DOMAIN,alkalimakersuite-pa.clients6.google.com
 
-  # ----------------------------------------------------------------
-  # Microsoft (Copilot / Bing Chat)
-  # ----------------------------------------------------------------
+  # ================================================================
+  # Microsoft (Copilot / Bing Chat / Office 365 AI)
+  # ================================================================
   - DOMAIN-SUFFIX,copilot.microsoft.com
   - DOMAIN-SUFFIX,bing.com
   - DOMAIN-SUFFIX,edgeservices.bing.com
-  - DOMAIN-SUFFIX,office.com # Office Copilot
-  - DOMAIN-SUFFIX,live.com   # MS login auth
+  - DOMAIN-SUFFIX,office.com
+  - DOMAIN-SUFFIX,live.com
 
-  # ----------------------------------------------------------------
+  # ================================================================
   # Anthropic (Claude)
-  # ----------------------------------------------------------------
+  # ================================================================
   - DOMAIN-SUFFIX,claude.ai
   - DOMAIN-SUFFIX,anthropic.com
 
-  # ----------------------------------------------------------------
-  # Meta (Meta AI)
-  # ----------------------------------------------------------------
+  # ================================================================
+  # Meta (Meta AI / Imagine)
+  # ================================================================
   - DOMAIN-SUFFIX,meta.ai
   - DOMAIN-SUFFIX,imagine.meta.com
   - DOMAIN-SUFFIX,facebook.ai
 
-  # ----------------------------------------------------------------
+  # ================================================================
   # X (Grok)
-  # ----------------------------------------------------------------
-  - DOMAIN-KEYWORD,grok
+  # ================================================================
   - DOMAIN-SUFFIX,x.ai
-  - PROCESS-NAME,grok
+  - DOMAIN-KEYWORD,grok
 
-  # ----------------------------------------------------------------
-  # Developer AI Tools
-  # ----------------------------------------------------------------
-  - DOMAIN-KEYWORD,copilot
-  - DOMAIN-SUFFIX,github.com # GitHub Copilot
+  # ================================================================
+  # Developer AI Tools (GitHub / JetBrains / etc.)
+  # ================================================================
+  - DOMAIN-SUFFIX,github.com
   - DOMAIN-SUFFIX,githubassets.com
   - DOMAIN-SUFFIX,githubusercontent.com
   - DOMAIN-SUFFIX,github.copilot
   - DOMAIN-SUFFIX,api.jetbrains.ai
 
-  # ----------------------------------------------------------------
-  # Other AI Platforms & Services
-  # ----------------------------------------------------------------
-  # Platforms & Search
+  # ================================================================
+  # Other Global AI Platforms
+  # ================================================================
+  # General AI / Search
   - DOMAIN-SUFFIX,perplexity.ai
   - DOMAIN-SUFFIX,poe.com
   - DOMAIN-SUFFIX,huggingface.co
   - DOMAIN-SUFFIX,huggingface.cloud
-  - DOMAIN-SUFFIX,kimi.ai
-  - DOMAIN-SUFFIX,dify.ai
   - DOMAIN-SUFFIX,jasper.ai
   - DOMAIN-SUFFIX,character.ai
   - DOMAIN-SUFFIX,you.com
@@ -91,7 +81,8 @@ payload:
   - DOMAIN-SUFFIX,cohere.ai
   - DOMAIN-SUFFIX,ai21.com
   - DOMAIN-SUFFIX,runwayml.com
-  # Image & Art
+
+  # Image & Art Generation
   - DOMAIN-SUFFIX,midjourney.com
   - DOMAIN-SUFFIX,stability.ai
   - DOMAIN-SUFFIX,dreamstudio.ai
@@ -100,7 +91,8 @@ payload:
   - DOMAIN-SUFFIX,clipdrop.co
   - DOMAIN-SUFFIX,fal.ai
   - DOMAIN-SUFFIX,scenario.com
-  # Music & Voice
+
+  # Music & Voice AI
   - DOMAIN-SUFFIX,suno.ai
   - DOMAIN-SUFFIX,elevenlabs.io
   - DOMAIN-SUFFIX,voicemod.net

@@ -81,6 +81,10 @@ payload:
   - PROCESS-NAME,com.wallet.crypto.trustapp.beta # Trust Wallet (Beta版)
   - PROCESS-NAME,io.xdefi.wallet              # XDEFI Wallet
   - PROCESS-NAME,com.emurgo.yoroi             # Yoroi (Cardano Wallet)
+  - PROCESS-NAME,com.polybaselabs.wallet             # payy
+
+
+
 
 # ---------------- 行情 / 投资组合 Market & Portfolio -----------------
   - PROCESS-NAME,com.blockfolio.blockfolio    # Blockfolio (被FTX收购, 已停止服务)

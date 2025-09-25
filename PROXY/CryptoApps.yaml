@@ -1,54 +1,75 @@
-# ================= 加密货币相关安卓应用包名 (2025年更新版) =================
+# ================= 加密货币相关安卓应用包名 (终极完整版) =================
+# 说明：本列表在“新旧最全版”基础上，进一步增加了应用的Beta版、特定国家/地区版、
+# 已停用的历史重要版本以及功能关联应用（如NFT、Card等），以实现最极致的兼容性。
 payload:
 
 # ---------------- 交易所 Exchanges -----------------
   - PROCESS-NAME,com.ascendex.app             # AscendEX 顶峰
   - PROCESS-NAME,com.bibox.app                # Bibox
-  - PROCESS-NAME,com.binance.dev              # Binance (测试版)
   - PROCESS-NAME,com.binance.mobile           # Binance (国际版)
+  - PROCESS-NAME,com.binance.android          # Binance (土耳其/部分地区曾用)
+  - PROCESS-NAME,com.binance.dev              # Binance (测试版)
   - PROCESS-NAME,com.binance.us               # Binance.US (美国版)
   - PROCESS-NAME,com.binance.miner            # Binance Pool 矿池
   - PROCESS-NAME,com.bitfinex.app             # Bitfinex
   - PROCESS-NAME,com.bitflyer.app             # bitFlyer
-  - PROCESS-NAME,com.bitget.exchange          # Bitget
+  - PROCESS-NAME,com.bitget.exchange          # Bitget (主用)
+  - PROCESS-NAME,com.bitget.app               # Bitget (备用/曾用)
   - PROCESS-NAME,com.bithumb.live             # Bithumb
   - PROCESS-NAME,com.bitmart.app              # BitMart
   - PROCESS-NAME,com.bitstamp.app             # Bitstamp
   - PROCESS-NAME,com.bybit.app                # Bybit
-  - PROCESS-NAME,com.coinbase.android         # Coinbase
+  - PROCESS-NAME,com.coinbase.android         # Coinbase (主应用)
+  - PROCESS-NAME,com.coinbase.pro             # Coinbase Pro (已停用, 功能合并至主应用)
+  - PROCESS-NAME,com.coinbase.prime           # Coinbase Prime (机构版)
+  - PROCESS-NAME,com.coinbase.card            # Coinbase Card (支付卡应用)
   - PROCESS-NAME,com.coinex.app               # CoinEx
   - PROCESS-NAME,com.coinone.android          # Coinone
-  - PROCESS-NAME,com.crypto.exchange          # Crypto.com Exchange (新版)
-  - PROCESS-NAME,co.mona.android              # Crypto.com Exchange (旧版)
-  - PROCESS-NAME,com.gateio.app               # Gate.io
+  - PROCESS-NAME,com.crypto.exchange          # Crypto.com Exchange (主应用)
+  - PROCESS-NAME,co.mona.android              # Crypto.com Exchange (旧版, 原名Monaco)
+  - PROCESS-NAME,com.ftx.trade                # FTX (已停业, 原Blockfolio收购方)
+  - PROCESS-NAME,com.ftx.us.mobile            # FTX.US (已停业, 美国版)
+  - PROCESS-NAME,com.gateio.app               # Gate.io (主用)
+  - PROCESS-NAME,com.gate.io                  # Gate.io (备用/曾用)
   - PROCESS-NAME,com.gemini.android           # Gemini
-  - PROCESS-NAME,pro.huobi                    # HTX (原 Huobi 火币)
+  - PROCESS-NAME,pro.huobi                    # HTX (新版, 原 Huobi)
   - PROCESS-NAME,com.huobi.client             # HTX (旧版包名)
   - PROCESS-NAME,com.korbit.android           # Korbit
   - PROCESS-NAME,com.kraken.invest            # Kraken (标准版)
   - PROCESS-NAME,com.kraken.pro               # Kraken Pro (专业版)
-  - PROCESS-NAME,com.kucoin.app               # KuCoin
+  - PROCESS-NAME,com.kucoin.app               # KuCoin (新版)
+  - PROCESS-NAME,com.kucoin.android           # KuCoin (旧版)
+  - PROCESS-NAME,com.kucoinpro.android        # KuCoin Pro (更早的旧版)
   - PROCESS-NAME,com.mexc.app                 # MEXC 抹茶
-  - PROCESS-NAME,com.okinc.okex.gp            # OKX 欧易
+  - PROCESS-NAME,com.okinc.okex.gp            # OKX 欧易 (主应用)
+  - PROCESS-NAME,com.okex.wallet              # OKX Wallet (独立的钱包应用或旧版)
   - PROCESS-NAME,com.okcoin.app               # OKCoin (部分地区，大部分业务已整合至OKX)
+  - PROCESS-NAME,com.okcoinpro.app            # OKCoin Pro (旧版)
   - PROCESS-NAME,com.pionex.app               # Pionex 派网
   - PROCESS-NAME,com.poloniex.app             # Poloniex
-  - PROCESS-NAME,com.upbit.android            # Upbit
+  - PROCESS-NAME,com.upbit.android            # Upbit (韩国版)
+  - PROCESS-NAME,com.upbit.id                 # Upbit (印尼版)
+  - PROCESS-NAME,com.upbit.th                 # Upbit (泰国版)
+  - PROCESS-NAME,com.upbit.sg                 # Upbit (新加坡版)
 
 # ---------------- 钱包 Wallets -----------------
   - PROCESS-NAME,io.atomicwallet              # Atomic Wallet
-  - PROCESS-NAME,com.bitget.web3              # Bitget Wallet (原 BitKeep)
-  - PROCESS-NAME,piuk.blockchain.android      # Blockchain.com Wallet
+  - PROCESS-NAME,com.bitget.web3              # Bitget Wallet (新版)
+  - PROCESS-NAME,com.bitkeep.wallet           # Bitget Wallet (旧版, 原名BitKeep)
+  - PROCESS-NAME,piuk.blockchain.android      # Blockchain.com Wallet (新版)
+  - PROCESS-NAME,info.blockchain.wallet       # Blockchain.com Wallet (旧版)
   - PROCESS-NAME,com.coinbase.android.wallet  # Coinbase Wallet
   - PROCESS-NAME,com.coinomi.wallet           # Coinomi
   - PROCESS-NAME,com.crypto.wallet            # Crypto.com DeFi Wallet
-  - PROCESS-NAME,exodusmovement.exodus        # Exodus
+  - PROCESS-NAME,exodusmovement.exodus        # Exodus (主用)
+  - PROCESS-NAME,com.exodusmovement.exodus    # Exodus (备用/曾用)
   - PROCESS-NAME,im.token.app                 # imToken
   - PROCESS-NAME,com.chainapsis.keplr         # Keplr Wallet
   - PROCESS-NAME,com.ledger.live              # Ledger Live
   - PROCESS-NAME,com.lobstr.android           # LOBSTR (Stellar Wallet)
   - PROCESS-NAME,com.mathwallet.android       # MathWallet
-  - PROCESS-NAME,io.metamask                  # MetaMask
+  - PROCESS-NAME,io.metamask                  # MetaMask (正式版)
+  - PROCESS-NAME,io.metamask.mobile.beta      # MetaMask (Beta版)
   - PROCESS-NAME,app.phantom                  # Phantom
   - PROCESS-NAME,com.rabby.wallet             # Rabby Wallet
   - PROCESS-NAME,me.rainbow                   # Rainbow Wallet
@@ -56,7 +77,8 @@ payload:
   - PROCESS-NAME,com.solflare.mobile          # Solflare
   - PROCESS-NAME,vip.mytokenpocket            # TokenPocket
   - PROCESS-NAME,com.satoshilabs.trezor       # Trezor Suite Lite
-  - PROCESS-NAME,com.wallet.crypto.trustapp   # Trust Wallet
+  - PROCESS-NAME,com.wallet.crypto.trustapp   # Trust Wallet (正式版)
+  - PROCESS-NAME,com.wallet.crypto.trustapp.beta # Trust Wallet (Beta版)
   - PROCESS-NAME,io.xdefi.wallet              # XDEFI Wallet
   - PROCESS-NAME,com.emurgo.yoroi             # Yoroi (Cardano Wallet)
 
@@ -66,11 +88,13 @@ payload:
   - PROCESS-NAME,com.coinglass.android        # CoinGlass
   - PROCESS-NAME,com.coinmarketcap.android    # CoinMarketCap
   - PROCESS-NAME,com.delta.crypto             # Delta
-  - PROCESS-NAME,com.tradingview.tradingviewapp # TradingView
+  - PROCESS-NAME,com.tradingview.tradingviewapp # TradingView (正式版)
+  - PROCESS-NAME,com.tradingview.tradingviewapp.beta # TradingView (Beta版)
   - PROCESS-NAME,io.zerion.android            # Zerion
 
 # ---------------- DeFi / NFT -----------------
   - PROCESS-NAME,io.blur.android              # Blur
+  - PROCESS-NAME,com.crypto.nft               # Crypto.com NFT
   - PROCESS-NAME,io.magiceden.android         # Magic Eden
   - PROCESS-NAME,io.opensea                   # OpenSea
   - PROCESS-NAME,xyz.uniswap.wallet           # Uniswap Wallet
@@ -81,4 +105,4 @@ payload:
   - PROCESS-NAME,com.nicehash.app             # NiceHash
   - PROCESS-NAME,com.blockchainvault          # Pi Network (主应用)
   - PROCESS-NAME,com.pi.browser               # Pi Browser (Pi生态浏览器)
-  - PROCESS-NAME,com.transferwise.android     # Wise (常用出入金工具)
+  - PROCESS-NAME,com.transferwise.android     # Wise (原 TransferWise, 包名未变, 常用出入金)

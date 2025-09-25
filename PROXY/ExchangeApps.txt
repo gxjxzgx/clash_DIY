@@ -12,6 +12,8 @@ payload:
   - PROCESS-NAME,com.bitfinex.app             # 大B网
   - PROCESS-NAME,com.bitflyer.app             # bitFlyer 交易所
   - PROCESS-NAME,com.bitget.app               # Bitget 交易所
+  - PROCESS-NAME,com.bitget.exchange               # Bitget 交易所
+
   - PROCESS-NAME,com.bithumb.live             # Bithumb 交易所
   - PROCESS-NAME,com.bitmart.app              # BitMart 交易所
   - PROCESS-NAME,com.bitstamp.app             # Bitstamp 交易所

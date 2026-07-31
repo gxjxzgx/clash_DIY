@@ -1,0 +1,1172 @@
+/**
+ * @file Clash / Mihomo 配置生成器
+ * @version 3.41.0
+ * @description 动态生成 Clash/Mihomo 配置：DNS 覆写、TUN、策略分组与分流规则
+ *              分流规则使用 MetaCubeX/meta-rules-dat 的 .mrs 格式（体积更小、加载更快）
+ **/
+
+// ============================================================================
+// 配置区
+// ============================================================================
+
+/** 是否隐藏"前置代理 -> 落地代理"链路分组（true = 隐藏分组，false = 显示并生效） */
+const HIDDEN_RELAY_PROXY = false;
+
+/** 图标 CDN 基础地址，REGIONS / appGroupDefs 等各处的图标 URL 均由此拼接，避免散落重复 */
+const ICON_BASE =
+  "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons";
+
+/** 地区分组定义（先于 FALLBACK_REGION 声明，供其复用地区正则，避免重复维护） */
+const REGIONS = [
+  { code: "HK", name: "🇭🇰 香港", regex: /(香港|HK|Hong Kong|🇭🇰)/i, icon: `${ICON_BASE}/flags/hk.svg` },
+  { code: "TW", name: "🇹🇼 台湾", regex: /(台湾|TW|Taiwan|🇹🇼)/i, icon: `${ICON_BASE}/flags/tw.svg` },
+  { code: "JP", name: "🇯🇵 日本", regex: /(日本|JP|Japan|🇯🇵)/i, icon: `${ICON_BASE}/flags/jp.svg` },
+  { code: "US", name: "🇺🇸 美国", regex: /(美国|US|USA|United States|America|🇺🇸)/i, icon: `${ICON_BASE}/flags/us.svg` },
+  { code: "SG", name: "🇸🇬 狮城", regex: /(新加坡|狮城|SG|Singapore|🇸🇬)/i, icon: `${ICON_BASE}/flags/sg.svg` },
+  { code: "QT", name: "🗃️ 其它", regex: null, icon: `${ICON_BASE}/link.svg` },
+];
+
+/**
+ * 故障转移分组的节点来源地区码：
+ * 值为 TW / HK / JP / US / SG 之一时，只用该地区的正则筛选故障转移候选节点；
+ * 值为其它任意内容（例如 "ALL"）时，不做地区筛选，故障转移分组使用全部订阅节点。
+ */
+const FALLBACK_REGION = "TW";
+
+/**
+ * FALLBACK_REGION 命中 REGIONS 里某个带正则的地区（即 TW/HK/JP/US/SG 之一）时，
+ * 取该地区自己的正则用于筛选；命中"其它"（regex: null）或没有命中任何地区码时为 null
+ * （= 不筛选，显示全部节点）。地区码本身直接复用 REGIONS，不再另外维护一份重复列表。
+ */
+const FALLBACK_NODE_PATTERN = REGIONS.find((r) => r.code === FALLBACK_REGION && r.regex)?.regex ?? null;
+
+/** 需要强制走国外 DoH 解析的服务域名（避免被 geosite:cn 提前命中） */
+const FOREIGN_FORCE_DOMAINS = [
+  "google.com", "googleapis.com", "googleapis.cn", "googlevideo.com", "gstatic.com",
+  "youtube.com", "youtu.be", "facebook.com", "instagram.com", "pinterest.com",
+  "twitter.com", "x.com", "whatsapp.com", "reddit.com", "snapchat.com",
+  "twitch.tv", "line.me", "github.com", "githubusercontent.com",
+  "openai.com", "chatgpt.com", "anthropic.com", "blackberry.com",
+];
+
+/** rule-provider 基础模板 */
+const RULE_PROVIDER_BASES = {
+  classical: { type: "http", interval: 86400, behavior: "classical", format: "yaml" },
+};
+
+/**
+ * meta-rules-dat（MetaCubeX 官方维护）的 .mrs 文件源，meta 分支，走 jsdmirror 镜像。
+ * geosite 目录下是域名类分类（behavior: domain），geoip 目录下是 IP 类分类（behavior: ipcidr）。
+ */
+const MRS_BASE = "https://cdn.jsdmirror.com/gh/MetaCubeX/meta-rules-dat@meta/geo";
+
+/** rule-provider 名 -> geosite 分类名（域名类）。provider 名统一加 site- 前缀，避免和策略分组/geoip 撞名 */
+const GEOSITE_CATEGORIES = {
+  "site-ads": "category-ads-all",
+  "site-cn": "cn",
+  "site-private": "private",
+  "site-openai": "openai",
+  "site-netflix": "netflix",
+  "site-spotify": "spotify",
+  "site-tiktok": "tiktok",
+  "site-telegram": "telegram",
+  "site-facebook": "facebook",
+  "site-instagram": "instagram",
+  "site-pinterest": "pinterest",
+  "site-twitter": "twitter",
+  "site-youtube": "youtube",
+  "site-whatsapp": "whatsapp",
+  "site-reddit": "reddit",
+  "site-line": "line",
+  "site-twitch": "twitch",
+  "site-discord": "discord",
+  "site-google": "google",
+  "site-apple": "apple",
+  "site-microsoft": "microsoft",
+  "site-steam": "steam",
+  "site-gfw": "gfw",
+  "site-bilibili": "bilibili",
+  "site-apple-cn": "apple-cn",
+  "site-google-cn": "google-cn",
+  "site-games-cn": "category-games@cn", // 远端文件名带 @，provider 引用名本身不带
+  "site-microsoft-cn": "microsoft@cn", // 微软中国区域名，应直连，同上不带 @
+  "site-steam-cn": "steam@cn", // Steam 国区域名，应直连，同上不带 @
+  "site-github": "github",
+  "site-paypal": "paypal",
+  "site-pixiv": "pixiv",
+  "site-biliintl": "biliintl", // 哔哩哔哩国际版（东南亚服），跟大陆版 bilibili 是两个分类
+  "site-onedrive": "onedrive",
+  "site-scholar": "category-scholar-!cn", // 学术站点（含 Google Scholar），非中国大陆域名
+  "site-ai": "category-ai-!cn", // 比 openai 更全的 AI 服务合集（ChatGPT/Gemini/Claude 等）
+};
+
+/** rule-provider 名 -> geoip 分类名（IP 类，均为 Loyalsoldier 扩展分类，非国家码，小写） */
+const GEOIP_CATEGORIES = {
+  "ip-cn": "cn",
+  "ip-private": "private",
+  "ip-netflix": "netflix",
+  "ip-telegram": "telegram",
+  "ip-facebook": "facebook",
+  "ip-twitter": "twitter",
+  "ip-google": "google",
+  "ip-cloudflare": "cloudflare",
+  "ip-cloudfront": "cloudfront",
+  "ip-fastly": "fastly",
+};
+
+/**
+ * geosite.dat / geoip.dat（MetaCubeX/meta-rules-dat release 分支）内置了绝大多数常用分类
+ * （广告、按国家/地区、按服务商），本配置只保留一个无法用内置分类替代的外部 rule-provider：
+ * gxjxzgx 的 CryptoApps_no_ip（币圈交易 App 包名/域名）。
+ */
+
+/** 内联落地代理：只进入"落地代理"分组，不参与地区分组/延迟优选等 */
+const LANDING_INLINE_PROXIES = [
+  {
+    name: "US-VM",
+    type: "vmess",
+    server: "cdns.doon.eu.org",
+    port: 443,
+    uuid: "4b47a143-d58e-4664-85f9-505231f0ab70",
+    alterId: 0,
+    cipher: "auto",
+    network: "ws",
+    "ws-opts": {
+      path: "/vmess-argo?ed=2560",
+      headers: { Host: "fort-preferences-potato-inf.trycloudflare.com" },
+    },
+    tls: true,
+    sni: "fort-preferences-potato-inf.trycloudflare.com",
+    "client-fingerprint": "firefox",
+    "dialer-proxy": "前置代理",
+  },
+  {
+    name: "US-AY",
+    type: "anytls",
+    server: "66.181.36.85",
+    port: 44316,
+    // anytls 用 password 字段，不是 uuid
+    password: "4b47a143-d58e-4664-85f9-505231f0ab70",
+    sni: "bing.com",
+    "skip-cert-verify": true,
+    // dialer-proxy 必须写在具体 proxy 上，不能写在 select 分组上
+    "dialer-proxy": "前置代理",
+  },
+  {
+    name: "US-HY2",
+    type: "hysteria2",
+    server: "66.181.36.85",
+    port: 44315,
+    password: "4b47a143-d58e-4664-85f9-505231f0ab70",
+    sni: "www.bing.com",
+    "skip-cert-verify": true,
+    "dialer-proxy": "前置代理",
+  },
+  {
+    name: "US-VL",
+    type: "vless",
+    server: "66.181.36.85",
+    port: 44314,
+    uuid: "4b47a143-d58e-4664-85f9-505231f0ab70",
+    flow: "xtls-rprx-vision",
+    "packet-encoding": "xudp",
+    tls: true,
+    sni: "www.iij.ad.jp",
+    network: "tcp",
+    "reality-opts": {
+      "public-key": "NL2pR_0frEUjSu62N-TtOCnnbwMCtCqwbf_yLsbRZxA",
+      "short-id": "",
+    },
+    "client-fingerprint": "firefox",
+    "dialer-proxy": "前置代理",
+  },
+];
+
+/**
+ * 每个内联落地代理的"直连版"（去掉 dialer-proxy，名字加 " - 直连"）。
+ * 只维护一份节点参数，两个版本自动同步。
+ */
+const LANDING_DIRECT_PROXIES = LANDING_INLINE_PROXIES.map(({ "dialer-proxy": _drop, ...rest }) => ({
+  ...rest,
+  name: `${rest.name} - 直连`,
+}));
+
+const CONFIG = {
+  speedTestUrl: "http://wifi.vivo.com.cn/generate_204", // vivo
+
+  customRules: [
+    "PROCESS-NAME,com.follow.clash,代理模式",                     // flclash
+    "PROCESS-NAME,org.zwanoo.android.speedtest,代理模式",         // speedtest测速软件
+
+    "PROCESS-NAME,com.tencent.mm,DIRECT",                     // 微信
+    "PROCESS-NAME,com.samsung.android.email.provider,DIRECT", // 三星邮箱
+    "DOMAIN-SUFFIX,jianguoyun.com,DIRECT",                    // 坚果云
+    "DOMAIN-SUFFIX,ipip.net,代理模式",                       // IP 归属地查询
+    "DOMAIN-SUFFIX,ip-api.com,代理模式",                       // IP 归属地查询
+    "DOMAIN-SUFFIX,surfsharkdns.com,代理模式",                 // Surfshark DNS 检测
+    "DOMAIN-SUFFIX,browserleaks.net,代理模式",                 // 浏览器/DNS 泄露测试网站
+    "DOMAIN-SUFFIX,browserleaks.com,代理模式",                 // 浏览器/DNS 泄露测试网站
+    "DOMAIN-SUFFIX,blackberry.com,代理模式",                   // BlackBerry 服务
+  ],
+
+  regions: REGIONS,
+};
+
+/**
+ * 所有带健康检查的分组（url-test / fallback / load-balance）共用的探测参数。
+ * 字段顺序对齐 Mihomo 官方文档：url -> interval -> lazy -> timeout ->
+ * max-failed-times -> expected-status。用 {...HEALTH_CHECK_DEFAULTS} 展开时
+ * 这几个字段会原样落在展开位置，其余字段（tolerance/strategy/hidden/icon 等）
+ * 按各分组自身需要单独书写。
+ */
+const HEALTH_CHECK_DEFAULTS = {
+  url: CONFIG.speedTestUrl,
+  interval: 300,
+  lazy: true,
+  timeout: 2000,
+  "max-failed-times": 5,
+  "expected-status": 204,
+};
+
+// ============================================================================
+// 工具函数
+// ============================================================================
+
+const Utils = {
+  /** 过滤掉流量/到期提示等非代理节点 */
+  filterProxies(proxies, excludePattern) {
+    return proxies.filter((p) => !excludePattern.test(p.name));
+  },
+
+  /** 按第一个匹配到的地区分类节点，未匹配的归入"🗃️ 其它" */
+  groupProxiesByRegion(proxies, regions) {
+    const matchableRegions = regions.filter((r) => r.regex);
+    const groups = {};
+
+    for (const proxy of proxies) {
+      const region = matchableRegions.find((r) => r.regex.test(proxy.name));
+      const bucket = region ? region.name : "🗃️ 其它";
+      (groups[bucket] ??= []).push(proxy.name);
+    }
+
+    return groups;
+  },
+};
+
+// ============================================================================
+// 配置构建器
+// ============================================================================
+
+const Builders = {
+  // --------------------------------------------------------------------
+  // 基础全局选项
+  // --------------------------------------------------------------------
+
+  buildBasicOptions() {
+    return {
+      "mixed-port": 7890,
+      "allow-lan": true,
+      "unified-delay": true,
+      "tcp-concurrent": true,
+      "geodata-mode": true,
+      mode: "rule",
+      ipv6: false,
+      // 完整 geosite/geoip bundle：规则表里的 RULE-SET 已经不依赖这两个文件了，
+      // 但 DNS 部分的 nameserver-policy / fake-ip-filter 用的 "geosite:xxx" 语法
+      // 以及规则表里的 GEOSITE,geolocation-!cn 仍然读取这里，因此保留并换成
+      // 官方维护、更新更及时的 MetaCubeX/meta-rules-dat。
+      "geox-url": {
+        geoip: "https://cdn.jsdmirror.com/gh/MetaCubeX/meta-rules-dat@release/geoip.dat",
+        geosite: "https://cdn.jsdmirror.com/gh/MetaCubeX/meta-rules-dat@release/geosite.dat",
+      },
+      profile: { "store-selected": true, "store-fake-ip": true },
+      "fakeip-process-mode": "strict",
+      "lan-allowed-ips": ["0.0.0.0/0", "::/0"],
+      "skip-auth-prefixes": ["127.0.0.1/32"],
+    };
+  },
+
+  // --------------------------------------------------------------------
+  // 网络层：DNS / 流量嗅探 / TUN（顺序对齐官方文档：DNS → 域名嗅探 → 入站/Tun）
+  // --------------------------------------------------------------------
+
+  buildDns() {
+    // #IP 提示可跳过引导解析这一轮往返，直接用给定 IP 连接 DoH 服务器；
+    // 每组配 2~3 个上游，避免单一服务商故障或被污染时无 DNS 可用。
+    const domestic = [
+      "https://223.5.5.5/dns-query",
+      "https://dns.alidns.com/dns-query#223.5.5.5",
+      "https://doh.pub/dns-query#119.29.29.29",
+    ];
+    const foreign = [
+      "https://dns.cloudflare.com/dns-query#1.1.1.1",
+      "https://dns.google/dns-query#8.8.8.8",
+      "https://dns.quad9.net/dns-query#9.9.9.9",
+    ];
+
+    return {
+      enable: true,
+      listen: "0.0.0.0:1053",
+      ipv6: false,
+
+      "enhanced-mode": "fake-ip",
+      "fake-ip-range": "198.18.0.1/16",
+      "fake-ip-filter": [
+        // 网络连接检测
+        "+.msftconnecttest.com", "+.msftncsi.com", "+.market.xiaomi.com",
+        // NTP 时间同步
+        "time.*.com", "time.*.gov", "pool.ntp.org",
+        // 路由器管理页面
+        "instant.arubanetworks.com", "setmeup.arubanetworks.com", "asusrouter.com",
+        "router.asus.com", "www.asusrouter.com", "oasisauth.h3c.com",
+        "routerlogin.com", "www.routerlogin.com", "tplogin.cn", "miwifi.com",
+        "www.miwifi.com", "+.hiwifi.com", "+.tplinkwifi.net", "+.tendawifi.com",
+        "+.leike.cc", "+.plex.direct", "+.router.ctc", "+.phicomm.me",
+        "+.peiluyou.com", "+.zte.home", "+.my.router",
+        // 本地域名和保留域名
+        "+.internal", "+.localdomain", "+.example", "+.invalid", "+.localhost",
+        "+.test", "+.local", "+.lan", "+.ts.net", "+.home.arpa",
+        // QQ 本地服务 & 企业微信
+        "localhost.ptlogin2.qq.com", "+.localhost.sec.qq.com", "localhost.work.weixin.qq.com",
+        // Steam 测试域名
+        "+.test.steampowered.com",
+        // IPv4/IPv6 反向解析：+.in-addr.arpa / +.ip6.arpa 本身就是带通配前缀的父域，
+        // 已覆盖所有具体网段的反向解析子域（如 10.in-addr.arpa、d.f.ip6.arpa 等），
+        // 不再逐条列出，避免几十行重复冗余
+        "+.in-addr.arpa", "+.ip6.arpa",
+        // Mihomo 内置分流兜底
+        "geosite:cn", "geosite:private",
+      ],
+
+      "default-nameserver": ["223.5.5.5", "119.29.29.29"],
+      nameserver: foreign,
+      // mihomo 按域名匹配的具体程度（精确 > 通配 > geosite）择优，
+      // 与下面键值写的先后顺序无关，这里的排列只是方便人读。
+      // 注意："geosite:xxx" 这里读的是 geox-url.geosite 指向的完整 bundle，
+      // 跟规则表里新增的 RULE-SET rule-providers 是两套独立机制，互不影响。
+      "nameserver-policy": {
+        // 精确指定的服务域名优先于下面的 geosite:cn 兜底，避免被误判为国内域名
+        ...Object.fromEntries(FOREIGN_FORCE_DOMAINS.map((domain) => [`+.${domain}`, foreign])),
+
+        "geosite:cn": domestic,
+        "geosite:private": "system",
+      },
+
+      // 专门解析各 proxy 的 server 字段（机场域名本身），与上面的
+      // nameserver-policy（解析客户端实际访问域名）互不冲突
+      "proxy-server-nameserver": ["223.5.5.5", "119.29.29.29", "114.114.114.114"],
+
+      "use-hosts": true,
+      "use-system-hosts": false,
+      "respect-rules": false,
+      // 顶层 ipv6 已关闭，再等 AAAA 记录纯属多余一轮查询
+      "prefer-dual-stack": false,
+      "prefer-h3": false,
+      "cache-algorithm": "arc",
+    };
+  },
+
+  buildSniffer() {
+    return {
+      enable: true,
+      "force-dns-mapping": true,
+      "parse-pure-ip": true,
+      "override-destination": false,
+      sniff: {
+        HTTP: { ports: ["80", "443"], "override-destination": false },
+        TLS: { ports: ["443"] },
+      },
+      "skip-domain": ["+.push.apple.com"],
+      "skip-dst-address": [
+        "91.105.192.0/23", "91.108.4.0/22", "91.108.8.0/21", "91.108.16.0/21",
+        "91.108.56.0/22", "95.161.64.0/20", "149.154.160.0/20", "185.76.151.0/24",
+        "2001:67c:4e8::/48", "2001:b28:f23c::/47", "2001:b28:f23f::/48", "2a0a:f280:203::/48",
+      ],
+    };
+  },
+
+  buildTun() {
+    return {
+      enable: true,
+      stack: "mixed",
+      device: "Mihomo",
+      "auto-route": true,
+      "auto-detect-interface": true,
+      // 劫持发往 1053（DNS 监听端口）的流量，交给 mihomo 自己的解析逻辑。
+      "dns-hijack": ["0.0.0.0:1053", "::/0:1053"],
+      "strict-route": false,
+    };
+  },
+
+  // --------------------------------------------------------------------
+  // 节点来源与策略分组
+  // --------------------------------------------------------------------
+
+  /**
+   * @param {string[]} subscriptionProxies 过滤掉流量/到期提示等非代理条目后的订阅节点名单
+   * @param {Object<string,string[]>} groupedProxies 按地区分类后的节点名单
+   * @param {string[]} fallbackProxies 故障转移候选节点名单
+   * @param {string[]} allProxyNames 未经 nonProxyPattern 正则过滤的原始订阅节点名单，
+   *        仅供"全部节点"分组使用——该分组刻意展示全部原始节点（含流量/到期提示类条目）
+   */
+  buildProxyGroups(subscriptionProxies, groupedProxies, fallbackProxies, allProxyNames) {
+    const regionOrder = CONFIG.regions.map((r) => r.name);
+    const regionNames = Object.keys(groupedProxies).sort(
+      (a, b) => regionOrder.indexOf(a) - regionOrder.indexOf(b)
+    );
+
+    const mainGroupNames = regionNames.flatMap((region) => [
+      `${region} - 自动选择`,
+      `${region} - 手动选择`,
+    ]);
+    const mainGroupNamesZD = regionNames.map((region) => `${region} - 自动选择`);
+    const appGroupProxies = ["代理模式", ...mainGroupNames, "全部节点", "DIRECT"];
+
+    const autoGroups = regionNames.map((region) => ({
+      name: `${region} - 自动选择`,
+      type: "fallback",
+      tolerance: 50,
+      proxies: groupedProxies[region],
+      ...HEALTH_CHECK_DEFAULTS,
+      hidden: true,
+    }));
+
+    const manualGroups = regionNames.map((region) => {
+      const regionConfig = CONFIG.regions.find((r) => r.name === region) || {};
+      return {
+        name: `${region} - 手动选择`,
+        type: "select",
+        proxies: groupedProxies[region],
+        url: CONFIG.speedTestUrl,
+        icon: regionConfig.icon,
+      };
+    });
+
+    // 只有在 FALLBACK_NODE_PATTERN 命中了地区（即 FALLBACK_REGION 等于 TW/HK/JP/US/SG
+    // 之一）且确实筛出了节点时，才使用筛选后的地区节点；否则故障转移分组直接使用
+    // 全部订阅节点。
+    const useFallbackNodes = FALLBACK_NODE_PATTERN !== null && fallbackProxies.length > 0;
+    const fallbackGroupProxies = useFallbackNodes ? fallbackProxies : subscriptionProxies;
+
+    const coreGroups = [
+      {
+        name: "代理模式",
+        type: "select",
+        proxies: [
+          "延迟优选",
+          "故障转移",
+          ...(HIDDEN_RELAY_PROXY === false ? ["落地代理"] : []),
+          "负载均衡 (散列)",
+          "负载均衡 (轮询)",
+          "DIRECT",
+          ...mainGroupNames,
+          "全部节点",
+        ],
+        url: CONFIG.speedTestUrl,
+        icon: `${ICON_BASE}/adjust.svg`,
+      },
+      {
+        name: "延迟优选",
+        type: "url-test",
+        tolerance: 50,
+        proxies: subscriptionProxies,
+        ...HEALTH_CHECK_DEFAULTS,
+        hidden: true,
+        icon: `${ICON_BASE}/speed.svg`,
+      },
+      {
+        name: "故障转移",
+        type: "fallback",
+        proxies: fallbackGroupProxies,
+        ...HEALTH_CHECK_DEFAULTS,
+        icon: `${ICON_BASE}/ambulance.svg`,
+      },
+      {
+        name: "负载均衡 (散列)",
+        type: "load-balance",
+        strategy: "consistent-hashing",
+        proxies: subscriptionProxies,
+        ...HEALTH_CHECK_DEFAULTS,
+        hidden: true,
+        icon: `${ICON_BASE}/balance.svg`,
+      },
+      {
+        name: "负载均衡 (轮询)",
+        type: "load-balance",
+        strategy: "round-robin",
+        proxies: subscriptionProxies,
+        ...HEALTH_CHECK_DEFAULTS,
+        hidden: true,
+        icon: `${ICON_BASE}/merry_go.svg`,
+      },
+    ];
+
+    // 前置代理 / 落地代理：HIDDEN_RELAY_PROXY = true 时隐藏这两个分组。
+    // 插入位置改到 index 3（"代理模式"、"延迟优选"、"故障转移"之后）：
+    // "延迟优选" 本身是 hidden，不会显示在客户端分组列表里，所以插入点挪到
+    // "故障转移" 之后即可让"故障转移"在 UI 上紧跟"代理模式"展示，
+    // 不需要改动 coreGroups 数组本身的声明顺序。
+    coreGroups.splice(
+      3,
+      0,
+      {
+        name: "前置代理",
+        type: "select",
+        proxies: ["延迟优选", ...mainGroupNamesZD, ...subscriptionProxies, "DIRECT"],
+        url: CONFIG.speedTestUrl,
+        hidden: HIDDEN_RELAY_PROXY,
+        icon: `${ICON_BASE}/link.svg`,
+      },
+      {
+        name: "落地代理",
+        type: "select",
+        proxies: [
+          ...LANDING_INLINE_PROXIES.map((p) => p.name),
+          ...LANDING_DIRECT_PROXIES.map((p) => p.name),
+          "DIRECT",
+        ],
+        url: CONFIG.speedTestUrl,
+        hidden: HIDDEN_RELAY_PROXY,
+        icon: `${ICON_BASE}/link.svg`,
+      }
+    );
+
+    // "社交媒体"已合并 Telegram/Discord/Facebook/Instagram/Pinterest/
+    // Twitter(X)/YouTube/WhatsApp/Reddit/Line/Snapchat/Twitch（原"国外媒体"更名）
+    const appGroupDefs = [
+      { name: "人工智能", icon: `${ICON_BASE}/chatgpt.svg` },
+      { name: "社交媒体", icon: `${ICON_BASE}/youtube.svg` },
+      { name: "币圈交易", icon: "https://fastly.jsdelivr.net/gh/vadimmalykhin/binance-icons@main/crypto/btc.svg" },
+      // "国际服务"合并了原来独立的 谷歌服务/苹果服务/微软服务 三个分组
+      { name: "国际服务", icon: `${ICON_BASE}/flags/un.svg` },
+    ];
+    const appGroups = [
+      ...appGroupDefs.map((def) => ({
+        name: def.name,
+        type: "select",
+        proxies: appGroupProxies,
+        url: CONFIG.speedTestUrl,
+        icon: def.icon,
+      })),
+      {
+        name: "国内服务",
+        type: "select",
+        // 跟其它应用分组同样的候选节点，只是把 DIRECT 挪到最前面：
+        // 默认直连，用户需要时仍可手动切换到代理线路
+        proxies: ["DIRECT", ...appGroupProxies.filter((p) => p !== "DIRECT")],
+        url: CONFIG.speedTestUrl,
+        icon: `${ICON_BASE}/flags/cn.svg`,
+      },
+      {
+        name: "漏网之鱼",
+        type: "select",
+        proxies: ["代理模式", "DIRECT"],
+        url: CONFIG.speedTestUrl,
+        icon: `${ICON_BASE}/fish.svg`,
+      },
+      {
+        name: "广告拦截",
+        type: "select",
+        proxies: ["REJECT", "代理模式", "DIRECT"],
+        url: CONFIG.speedTestUrl,
+        icon: `${ICON_BASE}/bug.svg`,
+      },
+    ];
+
+    // "全部节点"分组刻意使用未经 nonProxyPattern 过滤的 allProxyNames，
+    // 展示订阅返回的全部原始条目（含流量/到期提示等），不做筛选剔除；
+    // 其它所有分组仍然使用过滤后的 subscriptionProxies。
+    const otherAllNodesGroup = {
+      name: "全部节点",
+      type: "url-test",
+      tolerance: 50,
+      proxies: allProxyNames,
+      ...HEALTH_CHECK_DEFAULTS,
+      icon: `${ICON_BASE}/speed.svg`,
+    };
+
+    // "全部节点"紧跟在 appGroups 的最后一项"广告拦截"之后，
+    // 早于各地区的自动/手动选择分组。
+    return [...coreGroups, ...appGroups, otherAllNodesGroup, ...autoGroups, ...manualGroups];
+  },
+
+  // --------------------------------------------------------------------
+  // 路由规则与规则集（顺序对齐官方文档：路由规则 → 规则集合）
+  // --------------------------------------------------------------------
+
+  buildRules() {
+    return [
+      // ---- 域名类规则：匹配更快更精确，全部放在最前 ----
+      "RULE-SET,site-ads,广告拦截",
+
+      ...CONFIG.customRules,
+
+      "RULE-SET,CryptoApps_no_ip,币圈交易",
+
+      "RULE-SET,site-openai,人工智能",
+      "RULE-SET,site-ai,人工智能", // category-ai-!cn 覆盖更全，跟 openai 一起归到同一个分组
+
+      "RULE-SET,site-netflix,社交媒体",
+      "RULE-SET,site-spotify,社交媒体",
+      "RULE-SET,site-tiktok,社交媒体",
+      "RULE-SET,site-telegram,社交媒体",
+      "RULE-SET,site-facebook,社交媒体",
+      "RULE-SET,site-instagram,社交媒体",
+      "RULE-SET,site-pinterest,社交媒体",
+      "RULE-SET,site-twitter,社交媒体",
+      "RULE-SET,site-youtube,社交媒体",
+      "RULE-SET,site-whatsapp,社交媒体",
+      "RULE-SET,site-reddit,社交媒体",
+      "RULE-SET,site-line,社交媒体",
+      "RULE-SET,site-twitch,社交媒体",
+      "RULE-SET,site-discord,社交媒体",
+      "RULE-SET,site-biliintl,社交媒体", // 哔哩哔哩国际版，跟大陆版 bilibili 分开处理
+
+      "RULE-SET,site-google,国际服务",
+      "RULE-SET,site-apple,国际服务",
+      "RULE-SET,site-microsoft,国际服务",
+      "RULE-SET,site-onedrive,国际服务",
+
+      "RULE-SET,site-steam,代理模式",
+      "RULE-SET,site-gfw,代理模式",
+      "RULE-SET,site-github,代理模式",
+      "RULE-SET,site-paypal,代理模式",
+      "RULE-SET,site-pixiv,代理模式",
+      "RULE-SET,site-scholar,代理模式", // 学术站点（含 Google Scholar），没有单独分组就先归到通用代理
+
+      "RULE-SET,site-bilibili,国内服务",
+      "RULE-SET,site-private,DIRECT",
+      // apple-cn / google-cn / microsoft@cn / steam@cn / category-games@cn 是独立于
+      // apple/google/microsoft/steam 之外的"国区域名"分类，彼此不重叠，只需放在
+      // geolocation-!cn 之前才会生效，否则会先被下面的 geolocation-!cn 兜底命中代理
+      "RULE-SET,site-apple-cn,国内服务",
+      "RULE-SET,site-google-cn,国内服务",
+      "RULE-SET,site-microsoft-cn,国内服务",
+      "RULE-SET,site-steam-cn,国内服务",
+      "RULE-SET,site-games-cn,国内服务",
+
+      "RULE-SET,site-cn,国内服务",
+
+      // meta-rules-dat 未拆出 geolocation-!cn 的独立 .mrs 分类（它是"取反聚合"分类），
+      // 这条继续用内置 GEOSITE 语法，依赖 geox-url 里配置的完整 geosite bundle
+      "GEOSITE,geolocation-!cn,代理模式",
+
+      // ---- IP 类规则：仅在域名规则未命中时兜底 ----
+      "RULE-SET,ip-netflix,社交媒体",
+      "RULE-SET,ip-telegram,社交媒体",
+      "RULE-SET,ip-facebook,社交媒体",
+      "RULE-SET,ip-twitter,社交媒体",
+      "RULE-SET,ip-google,国际服务",
+      // cloudflare/cloudfront/fastly 是通用 CDN 的 IP 段，域名可能是任何服务，
+      // 只在域名规则完全没命中时才会兜底到这里，走代理模式相对保险
+      "RULE-SET,ip-cloudflare,代理模式",
+      "RULE-SET,ip-cloudfront,代理模式",
+      "RULE-SET,ip-fastly,代理模式",
+      "RULE-SET,ip-private,DIRECT,no-resolve",
+      "RULE-SET,ip-cn,国内服务",
+
+      "MATCH,漏网之鱼",
+    ];
+  },
+
+  buildRuleProviders() {
+    const providers = {
+      // 币圈交易 App 包名/域名，meta-rules-dat 没有这个分类，保留原有第三方 classical 规则集
+      CryptoApps_no_ip: {
+        ...RULE_PROVIDER_BASES.classical,
+        url: "https://raw.githubusercontent.com/gxjxzgx/clash_DIY/refs/heads/main/PROXY/CryptoApps.yaml",
+        path: "./ruleset/gxjxzgx/CryptoApps_no_ip.yaml",
+      },
+    };
+
+    // 域名类分类：behavior: domain
+    for (const [name, file] of Object.entries(GEOSITE_CATEGORIES)) {
+      providers[name] = {
+        type: "http",
+        behavior: "domain",
+        format: "mrs",
+        interval: 86400,
+        url: `${MRS_BASE}/geosite/${file}.mrs`,
+        path: `./ruleset/mrs/geosite/${file}.mrs`,
+      };
+    }
+
+    // IP 类分类：behavior: ipcidr
+    for (const [name, file] of Object.entries(GEOIP_CATEGORIES)) {
+      providers[name] = {
+        type: "http",
+        behavior: "ipcidr",
+        format: "mrs",
+        interval: 86400,
+        url: `${MRS_BASE}/geoip/${file}.mrs`,
+        path: `./ruleset/mrs/geoip/${file}.mrs`,
+      };
+    }
+
+    return providers;
+  },
+};
+
+// ============================================================================
+// 主入口函数
+// ============================================================================
+
+function main(params) {
+  params = params || {};
+  const proxies = params.proxies || [];
+
+  if (proxies.length === 0) {
+    console.warn("未找到任何代理节点，部分分组可能为空。");
+  }
+
+  // 过滤掉流量/到期时间/订阅群等非代理信息条目
+  const nonProxyPattern = /流量|到期|剩余|官网|网址|套餐|群|频道|订阅|重置/i;
+  const cleanProxies = Utils.filterProxies(proxies, nonProxyPattern);
+  const proxyNames = cleanProxies.map((p) => p.name);
+  // "全部节点"分组专用：不经过 nonProxyPattern 过滤的原始节点名单
+  const allProxyNames = proxies.map((p) => p.name);
+
+  const groupedProxies = Utils.groupProxiesByRegion(cleanProxies, CONFIG.regions);
+  const fallbackProxies = FALLBACK_NODE_PATTERN
+    ? proxyNames.filter((name) => FALLBACK_NODE_PATTERN.test(name))
+    : [];
+
+  const output = { proxies: [...proxies, ...LANDING_INLINE_PROXIES, ...LANDING_DIRECT_PROXIES] };
+  Object.assign(output, Builders.buildBasicOptions());
+
+  output.dns = Builders.buildDns();
+  output.sniffer = Builders.buildSniffer();
+  output.tun = Builders.buildTun();
+  output["proxy-groups"] = Builders.buildProxyGroups(proxyNames, groupedProxies, fallbackProxies, allProxyNames);
+  output.rules = Builders.buildRules();
+  output["rule-providers"] = Builders.buildRuleProviders();
+
+  return output;
+}
+
+// ============================================================================
+// 版本更新日志 (Changelog)
+// ============================================================================
+/**
+ * 3.41.0（相对 3.40.0，改用更小的改动方式还原同样的视觉效果）：
+ *   1. coreGroups 数组声明顺序改回原样（"延迟优选"仍在"代理模式"之后、
+ *      "故障转移"之前），撤销 3.40.0 里把"故障转移"对象挪到数组第 2 位
+ *      的改动。
+ *   2. 只保留一处改动：coreGroups.splice() 的插入索引从 3.40.0 的 2
+ *      改为 3，让"前置代理"/"落地代理"插到"故障转移"之后。
+ *   3. 效果说明：因为"延迟优选"本身是 hidden: true，客户端渲染分组
+ *      列表时不会显示它，所以尽管 config 文件里真实生成的数组顺序是
+ *      "代理模式 → 延迟优选 → 故障转移 → 前置代理 → 落地代理 → ..."，
+ *      用户在客户端实际看到的可见顺序仍然是
+ *      "代理模式 → 故障转移 → 前置代理 → 落地代理 → ..."，跟 3.40.0
+ *      的视觉效果完全一致，但只需改 splice 的一个数字，不用重排整个
+ *      数组字面量，改动面更小、更不容易出错。
+ *
+ * 3.40.0（相对 3.39.0，纯排序调整，无字段/行为变更）：
+ *   1. buildProxyGroups() 里 proxy-groups 输出顺序调整："故障转移"分组
+ *      从原来排在"延迟优选"之后（第 4 位）挪到紧跟"代理模式"之后（第 2
+ *      位），"前置代理"/"落地代理"两个分组相应从 splice(1, ...) 改为
+ *      splice(2, ...)，插到"故障转移"后面而不是"代理模式"后面。
+ *   2. 调整后完整顺序：代理模式 → 故障转移 → 前置代理 → 落地代理 →
+ *      延迟优选 → 负载均衡(散列) → 负载均衡(轮询) → ...（后续分组不变）。
+ *   3. 仅影响客户端里策略组的展示/排列顺序，不影响任何分组的 proxies
+ *      来源、健康检查参数、hidden 状态或 icon，也不影响 rules 对各分组
+ *      的引用（规则表里写的是分组名字符串，跟数组顺序无关）。
+ *
+ * 3.39.0（相对 3.38.0，纯代码精简，无行为变更）：
+ *   1. 删除 FALLBACK_REGION_CODES 常量：这份 `["TW","HK","JP","US","SG"]`
+ *      跟 REGIONS 数组里已有的地区码是两份需要手动保持同步的重复数据，
+ *      本次改为直接从 REGIONS 里按 `r.code === FALLBACK_REGION && r.regex`
+ *      查找匹配项（`r.regex` 这个条件同时天然排除了 QT/"🗃️ 其它"这种没有
+ *      正则的地区，不用再靠额外的白名单数组去判断"是不是合法地区码"）。
+ *   2. FALLBACK_NODE_PATTERNS（数组）改名为 FALLBACK_NODE_PATTERN（单值，
+ *      可能是正则或 null）：FALLBACK_REGION 设计上只能是单个值，之前用
+ *      数组 + `.some()` 遍历的写法是为"可能有多个正则"这种从未出现过的
+ *      情况多包了一层，实际最多只有 0 或 1 个元素。main() 里
+ *      `fallbackProxies` 的计算和 buildProxyGroups() 里 `useFallbackNodes`
+ *      的判断同步从"数组长度/`.some()`"改为直接判空、`.test()`。
+ *   3. 纯精简，输出结果（proxy-groups、rules 等）与 3.38.0 完全一致，
+ *      已用示例节点数据重新跑过 main() 验证。
+ *
+ * 3.38.0（相对 3.37.0）：
+ *   1. 删除"故障转移-延迟优选"辅助分组：该分组原本是一个 hidden 的
+ *      url-test 子分组，专门给"故障转移"分组在 FALLBACK_REGION 命中
+ *      地区时引用（["故障转移-延迟优选", ...fallbackProxies]）。现在
+ *      "故障转移"分组在命中地区筛选时直接使用筛选后的 fallbackProxies
+ *      节点列表，不再经过这层多余的中间分组。
+ *   2. buildProxyGroups() 里 useFallbackNodes 判断逻辑保留（仍然用来
+ *      决定是否对故障转移候选节点做地区筛选），但不再据此额外 push 一个
+ *      "故障转移-延迟优选"分组，coreGroups 末尾对应的 push 代码块已删除。
+ *   3. 行为影响：命中地区筛选（默认 FALLBACK_REGION = "TW"）时，"故障
+ *      转移"分组现在直接对该地区节点做 fallback 健康检查，不再有一层
+ *      "先 url-test 优选、再 fallback 兜底"的嵌套逻辑，减少一次不必要
+ *      的后台测速请求，分组列表里也少了一个隐藏分组。未命中地区筛选
+ *      （FALLBACK_REGION 设为地区码之外的值）时行为不变。
+ *
+ * 3.37.0（相对 3.36.0，纯格式修复，无逻辑变更）：
+ *   1. 新增的 FOREIGN_FORCE_DOMAINS 条目 blackberry.com 补上了漏掉的逗号后
+ *      空格（原来是 "anthropic.com","blackberry.com" 紧贴着没空格），并删掉
+ *      数组结尾多出的一个空行。
+ *   2. customRules 里新增的 5 条 DOMAIN-SUFFIX 规则（ip-api.com /
+ *      surfsharkdns.com / browserleaks.net / browserleaks.com /
+ *      blackberry.com）此前每行都带了行尾多余空格，且互相之间缺注释、
+ *      对不齐；本次去掉了行尾空白、补全行内注释并按现有惯例对齐到同一列，
+ *      数组结尾多余的两个空行合并删除。
+ *   ⚠️ ip-api.com / surfsharkdns.com / browserleaks.net / blackberry.com
+ *      的注释是按域名字面含义补的常见用途说明（IP 归属地查询 / Surfshark
+ *      DNS 检测 / 浏览器指纹测试 / BlackBerry 服务），不是你告诉我的具体
+ *      场景，如果实际用途不是这些，告诉我一声我改一下措辞。
+ *
+ * 3.36.0（相对 3.35.0，纯代码优化，无行为变更）：
+ *   1. ICON_BASE 常量上移到 REGIONS 之前声明：此前 REGIONS 里 5 个地区各自
+ *      用 `${"完整 CDN 地址字符串"}/flags/xx.svg` 内联重复了同一段 URL
+ *      （因为当时 ICON_BASE 声明在 REGIONS 之后，直接引用会触发 TDZ 报错，
+ *      只能硬编码绕过）。现在 ICON_BASE 提到最前面，REGIONS 里改回正常的
+ *      `${ICON_BASE}/flags/xx.svg`，删掉了 5 处重复字符串。
+ *   2. 新增 HEALTH_CHECK_DEFAULTS 常量，收敛 url/interval/lazy/timeout/
+ *      max-failed-times/expected-status 这组探测参数：此前"延迟优选"、
+ *      "故障转移"、两个"负载均衡"、"故障转移-延迟优选"、各地区"自动选择"、
+ *      "全部节点" 共 7 处分组各自手写了一份完全相同的取值，现改为
+ *      `...HEALTH_CHECK_DEFAULTS` 展开，tolerance/strategy/hidden/icon 等
+ *      分组专属字段不受影响、继续单独书写。展开后字段顺序与之前手写的
+ *      顺序完全一致，不影响生成结果。
+ *   3. 顺手清理了 QT 地区条目和 "前置代理/落地代理" 注释附近两处历史遗留
+ *      的格式问题（多余换行、trailing whitespace），无实质内容变化。
+ *
+ * 3.35.0（相对 3.34.0）：
+ *   1. HIDDEN_RELAY_PROXY 语义反转：原来 1 = 显示并生效、0 = 隐藏分组，改为布尔值
+ *      true = 隐藏"前置代理"/"落地代理"分组、false = 显示并生效。相应地，
+ *      "代理模式" proxies 列表里 "落地代理" 的引入条件从
+ *      `HIDDEN_RELAY_PROXY === 1` 改为 `HIDDEN_RELAY_PROXY === false`；
+ *      buildProxyGroups() 内 `relayGroupsHidden` 的判定从
+ *      `HIDDEN_RELAY_PROXY === 0` 改为 `HIDDEN_RELAY_PROXY === true`。
+ *      默认值也从 1 改为 true（即默认隐藏这两个分组），如果你希望默认显示，
+ *      把顶部 `const HIDDEN_RELAY_PROXY = true;` 改成 `false` 即可。
+ *   2. 故障转移节点来源简化为单一变量：删除了 FALLBACK_PROXY_MODE 和
+ *      FALLBACK_PROXY_MODE_TXT 这两个开关，新增 FALLBACK_REGION（默认 "TW"）。
+ *      当 FALLBACK_REGION 等于 TW/HK/JP/US/SG 之一时，故障转移候选节点按该
+ *      地区正则筛选（等价于原来 FALLBACK_PROXY_MODE = 1 的行为）；当
+ *      FALLBACK_REGION 是这五个地区码之外的任意值（例如 "ALL"）时，
+ *      FALLBACK_NODE_PATTERNS 为空数组，故障转移分组直接使用全部订阅节点，
+ *      也不会创建"故障转移-延迟优选"辅助分组（等价于原来
+ *      FALLBACK_PROXY_MODE = 0 的行为）。main() 里 useFallbackNodes 的判定
+ *      同步从 `FALLBACK_PROXY_MODE === 1` 改为 `FALLBACK_NODE_PATTERNS.length > 0`。
+ *
+ * 3.34.0（相对 3.33.0）：
+ *   1. buildDns() 的 fake-ip-filter 补充了此前缺失的条目：小米联网检测
+ *      （+.market.xiaomi.com）；一批路由器管理页面域名（华三/华硕/水星/
+ *      腾达/斐讯/中兴等，共 21 条）；本地/保留域名（+.internal、
+ *      +.localdomain、+.example、+.invalid、+.localhost、+.test、
+ *      +.ts.net、+.home.arpa）；Steam 测试域名（+.test.steampowered.com）。
+ *   2. QQ 本地服务里的 `localhost.sec.qq.com` 改成带通配前缀的
+ *      `+.localhost.sec.qq.com`，跟 `localhost.ptlogin2.qq.com` 一起额外
+ *      覆盖其子域名，不再只匹配精确域名。
+ *   3. 补充来源里列出的几十条具体 in-addr.arpa / ip6.arpa 反向解析子域
+ *      （172.16/12、100.64/10 CGNAT 网段等）未逐条加入：现有的
+ *      `+.in-addr.arpa` 和 `+.ip6.arpa` 本身带通配前缀，已经覆盖所有
+ *      具体网段的反向解析子域，逐条列出属于重复冗余，故只保留这两条
+ *      父域通配规则。
+ *   4. 顺手给 fake-ip-filter 按类别加了行内注释（网络连接检测、NTP 时间
+ *      同步、路由器管理页面、本地/保留域名、QQ 本地服务、Steam 测试域名、
+ *      反向解析、Mihomo 内置分流兜底），方便以后按类别增删。
+ *
+ * 3.33.0（相对 3.32.0）：
+ *   1. "🗃️ 其它 - 全部节点"更名为"全部节点"：appGroupProxies、"代理模式"
+ *      分组的候选项、分组自身 name 三处同步改名。
+ *   2. 该分组在 proxy-groups 输出顺序里从末尾挪到了"广告拦截"分组之后
+ *      （紧跟 appGroups，早于各地区的自动/手动选择分组），buildProxyGroups()
+ *      的返回语句相应调整为
+ *      `[...coreGroups, ...appGroups, otherAllNodesGroup, ...autoGroups, ...manualGroups]`。
+ *   3. "全部节点"分组的节点来源改为不经过 nonProxyPattern 正则过滤的原始
+ *      订阅节点列表：main() 新增 allProxyNames（取自过滤前的 proxies），
+ *      并作为新参数传给 buildProxyGroups()，只有这一个分组使用它；其它
+ *      所有分组（地区分组、故障转移、延迟优选、各应用分组等）继续使用
+ *      过滤后的 proxyNames，不受影响。也就是说流量/到期提示等原本会被
+ *      nonProxyPattern 踢掉的"节点"，现在会出现在"全部节点"分组里。
+ *
+ * 3.32.0（相对 3.31.0）：
+ *   1. "国外媒体"分组更名为"社交媒体"（语义不变，纯改名），buildRules() 里
+ *      所有原来指向"国外媒体"的 RULE-SET/域名类与 IP 类规则同步改为
+ *      "社交媒体"。
+ *   2. 合并"谷歌服务"/"苹果服务"/"微软服务"三个分组为一个新分组
+ *      "国际服务"，appGroupDefs 里删除原来三条独立定义，改成一条
+ *      "国际服务"；buildRules() 里 site-google/site-apple/site-microsoft/
+ *      site-onedrive/ip-google 这几条规则的落地分组同步改为"国际服务"。
+ *      ⚠️ 图标沿用 ICON_BASE 下的 global.svg，是按同一图标仓库命名习惯
+ *      猜测的文件名，未做网络校验，如果加载不出图标，告诉我一声换掉。
+ *   3. 新增分组"国内服务"：候选节点跟其它应用分组一样用 appGroupProxies，
+ *      但把 DIRECT 挪到了数组最前面，默认直连、可随时手动切代理。
+ *      buildRules() 里原本写死 DIRECT 的国内域名/IP 规则——site-bilibili、
+ *      site-apple-cn、site-google-cn、site-microsoft-cn、site-steam-cn、
+ *      site-games-cn、site-cn、ip-cn——已改为指向"国内服务"，这样默认
+ *      行为不变（分组默认就是 DIRECT），但需要时可以手动切换成代理。
+ *      site-private 和 ip-private（局域网/私有地址）保留硬编码 DIRECT，
+ *      因为这类地址本来就不该走代理。
+ *
+ * 3.31.0（相对 3.30.0，纯格式修复，无逻辑变更）：
+ *   1. 清理文件头部三连空行为一个空行；修掉两处历史遗留的"只有空格没有
+ *      内容"的行（第 7/8 行、changelog 注释块中间第 801 行缺了 " *" 前缀
+ *      导致跟上下文格式不一致），统一了整份文件里的空白字符。
+ *   2. customRules 数组里两条规则之间多出的一个空行去掉，只在两组语义
+ *      不同的规则（App 包名类 / 域名类）之间保留一个空行分隔。
+ *   3. customRules 数组内 6 条规则的行内注释（// flclash、// 微信 等）
+ *      统一按最长的一行对齐到同一列，并把 `//备注` 统一改成 `// 备注`
+ *      （// 后补一个空格），跟文件里其它行内注释的写法保持一致。
+ *   4. 全文检查确认：没有 Tab 字符、没有非 2 的倍数的缩进错位、没有
+ *      连续 2 行以上的多余空行，本次未新增或删除任何字段、未改变任何
+ *      分组/规则的行为。
+ *
+ * 3.30.0（相对 3.29.0）：
+ *   1. 给所有带健康检查的分组（url-test / fallback / load-balance 类型，
+ *      共 7 个：延迟优选、故障转移、负载均衡×2、故障转移-延迟优选、
+ *      各地区自动选择、🗃️ 其它-全部节点）补上 lazy: true，插入位置按
+ *      官方字段顺序放在 interval 之后、timeout 之前。
+ *      ⚠️ lazy 取舍说明（本次选择 true，即官方默认值）：
+ *        - lazy: true（本次采用）——分组未被"选中/激活"时不参与后台
+ *          定时测速，省电省流量，对移动端尤其友好；代价是如果这个分组
+ *          很久没被切换到、突然被选中时，第一次请求可能会因为要现测一次
+ *          节点而多一点延迟（通常一两百毫秒到一两秒，取决于节点响应）。
+ *        - lazy: false ——不管当前是否被选中，都按 interval 定时测速，
+ *          切换到该分组时数据总是新鲜的、没有首次延迟，但会持续消耗
+ *          流量和后台资源，7 个分组常年同时测速对纯流量计费的机场或
+ *          电池敏感的移动设备不太友好。
+ *      本配置里这 7 个分组大多是 hidden 的辅助分组（真正展示给用户的
+ *      是"代理模式"和各地区手动选择），切换频率不高，所以选了默认的
+ *      true；如果你更在意"随时切换都零延迟"而不在乎流量/耗电，告诉我
+ *      一声，我可以把这 7 处全部改成 lazy: false。
+ *   2. 上述 7 个分组的 timeout 统一从 5000 改为 2000（毫秒）：探测地址
+ *      用的是 generate_204，正常节点几百毫秒内应该就有响应，5000ms 的
+ *      超时对"判断节点是否可用"偏宽松，会让明显该被判定失败的节点多等
+ *      3 秒才出结果；2000ms 在国内典型移动网络下对正常节点基本不会误杀，
+ *      同时能让故障节点更快被剔除。
+ *
+ * 3.29.0（相对 3.28.0）：
+ *   1. buildProxyGroups() 里所有策略组对象字面量的字段顺序，统一按 Mihomo
+ *      官方文档（wiki.metacubex.one/config/proxy-groups/）给出的通用字段
+ *      顺序重排：name → type → [type 专属字段] → proxies → url → interval
+ *      → timeout → lazy/max-failed-times → expected-status → hidden → icon。
+ *      其中 tolerance（url-test/fallback 专属）、strategy（load-balance
+ *      专属）不在官方通用字段表内，按惯例紧跟在 type 后面，因为它们本质
+ *      是在描述"这个 type 具体怎么工作"。
+ *   2. 补齐此前缺失的健康检查参数：给所有带 url/interval 的分组
+ *      （代理模式除外，因为 select 类型 url/interval 官方明确不生效）
+ *      统一补上 timeout: 5000（默认值，显式写出便于阅读）、
+ *      max-failed-times: 5（默认值，同上）、expected-status: 204
+ *      （匹配 speedTestUrl 用的 generate_204 探测地址，之前完全没配置
+ *      期望状态码，节点即使返回非 204 也会被判定为存活）。
+ *   3. "手动选择"分组（type: select）按官方说明去掉了 url 字段——select
+ *      类型下 url/interval/expected-status 均不会生效（见 Mihomo issue
+ *      #2013），继续保留只会误导阅读配置的人，故删除。
+ *   4. 未改变任何分组的 proxies 来源、名字、图标或 hidden 逻辑，纯粹是
+ *      字段顺序重排 + 健康检查参数补全，不影响实际分流行为，唯一实际
+ *      生效的行为变化是 expected-status: 204 补齐后，健康检查会更严格
+ *      地要求节点返回 204 才算存活。
+ *
+ * 3.28.0（相对 3.27.0）：
+ *   1. 删除文件型 proxy-provider "landingProxies"：移除 CONFIG.landingProxyPath、
+ *      Builders.buildProxyProviders() 方法、以及 "落地代理" 分组上
+ *      landing.use = ["landingProxies"] 的引用；main() 中不再输出
+ *      output["proxy-providers"]。
+ *   2. "落地代理" 分组本身及其四个内联节点（US-VM / US-AY / US-HY2 / US-VL，
+ *      含各自的 "- 直连" 版本）保留不变，仅去掉外部文件节点来源这一条路径。
+ *
+ * 3.27.0（相对 3.26.0）：
+ *   1. FALLBACK_NODE_PATTERNS 不再手写重复正则，改为从 REGIONS 里的台湾条目派生，
+ *      避免两处正则漂移导致故障转移节点筛选和地区分组结果不一致。
+ *   2. "故障转移-延迟优选" 分组只在 FALLBACK_PROXY_MODE === 1 时才会被创建，
+ *      之前该模式为 0 时这个分组会被无意义地创建并每 300s 发起一次测速请求。
+ *   3. 去掉 Utils.mergeUpdate 这层对 Object.assign 的纯包装，直接调用。
+ *
+ * [3.25.0] - 缺失：本条日志内容缺失，具体改动未记录，待补充。
+ *
+ * 3.26.0：
+ *   初始版本：DNS 覆写（fake-ip + nameserver-policy 分流）、TUN、流量嗅探、
+ *   前置代理/落地代理链路、按地区自动/手动分组、基于 MetaCubeX/meta-rules-dat
+ *   的 .mrs 规则集分流。
+ *
+ * [3.24.0] - 规则顺序调整：IP 规则统一挪到域名规则之后
+ * - 【调整】3.23.0 里 GEOSITE 和对应的 GEOIP 是逐个服务紧挨着写的
+ *   （比如 `GEOSITE,netflix` 后面马上跟一条 `GEOIP,netflix`）。这版把
+ *   全部 GEOIP 规则（netflix/telegram/facebook/twitter/google/private/
+ *   cn）统一抽出来放到 buildRules() 末尾、MATCH 之前，跟前面所有域名类
+ *   规则（RULE-SET、GEOSITE、DOMAIN 系列、PROCESS-NAME）分成清晰的两段，
+ *   不再交叉排列。
+ * - 【原因】域名匹配不需要目标 IP，只要看得到 SNI/Host 就能判断，命中
+ *   即走；IP 匹配则要等连接的目标 IP 明确后才能判断，天然应该排在后面
+ *   兜底，只处理域名规则漏掉或没有域名信息（比如直连 IP）的流量。
+ * - 【副作用说明】`GEOSITE,geolocation-!cn,代理模式` 现在排在
+ *   `GEOIP,cn,DIRECT` 前面了（原来反过来）。也就是说如果某个域名已经
+ *   被识别为"非大陆域名"，会直接走代理，不会因为它解析出的 IP 恰好落在
+ *   `geoip:cn` 里而被 DIRECT——这属于域名判断优先于 IP 判断的题中之义，
+ *   实际影响的场景很少（比如部分 CDN 在国内有节点的外国网站）。
+ *
+ * [3.23.0] - 分流规则重写：改用 Loyalsoldier/v2ray-rules-dat 内置 GEOSITE/GEOIP 分类
+ * - 【背景】geox-url 早就指向 Loyalsoldier/v2ray-rules-dat 编译的
+ *   geoip.dat / geosite.dat，但之前的分流规则大部分还是靠 HosheaPDNX
+ *   （mrs 格式）、blackmatrix7、REIJI007 这几个独立仓库的 rule-provider
+ *   逐个下载实现，等于"守着一份更强的数据不用，反而依赖好几个容易失联的
+ *   小仓库"。这版把能用内置分类覆盖的规则全部切过去。
+ * - 【移除的 rule-provider】Advertising / Privacy（blackmatrix7）、
+ *   AdBlock_REIJI007，以及 HosheaPDNX 的全部 mrs 规则集（Apple-Site/IP、
+ *   Bilibili-Site/IP、China-Site/IP、GFWList-Site、Google-Site/IP、
+ *   GoogleFCM-Site、Local-IP、Microsoft-Site、Netflix-Site/IP、
+ *   OpenAI-Site/IP、Speedtest-Site、Spotify-Site/IP、Steam-Site、
+ *   Telegram-Site/IP、TikTok-Site）。只保留 gxjxzgx 的
+ *   CryptoApps_no_ip（币圈交易 App 规则，v2ray-rules-dat 没有对应数据）。
+ * - 【替换方案】
+ *   - 广告拦截：三个规则集 -> `GEOSITE,category-ads-all`（本身就聚合了
+ *     EasyList/EasyListChina/AdGuard DNS Filter/Peter Lowe/Dan Pollock）。
+ *   - 各服务分流：Apple/Google/Microsoft/Netflix/OpenAI/Spotify/Steam/
+ *     Bilibili/TikTok/Telegram 等全部改成 `GEOSITE,<name>`；其中
+ *     Netflix/Telegram/Facebook/Twitter/Google 额外补了对应的
+ *     `GEOIP,<name>` 规则（v2ray-rules-dat 的 geoip.dat 里有这几个扩展
+ *     分类）。Apple/Microsoft/OpenAI/Spotify/Steam/Bilibili/TikTok 目前
+ *     没有独立的 geoip 分类，所以只用域名规则，不再强凑 IP 规则。
+ *   - GFWList-Site -> `GEOSITE,gfw`；China-Site/IP -> `GEOSITE,cn` +
+ *     `GEOIP,cn`；Local-IP -> `GEOSITE,private` + `GEOIP,private`。
+ *   - 新增 `GEOSITE,apple-cn` / `GEOSITE,google-cn` /
+ *     `GEOSITE,category-games@cn` 三条大陆可直连规则，按官方文档要求放在
+ *     `geosite:geolocation-!cn` 之前，避免苹果/谷歌/游戏平台在国内有加速
+ *     节点的域名被误判为"非大陆"走代理。
+ * - 【收益】少维护十几个 rule-provider 的下载地址；不会再因为某个小仓库
+ *   （如之前的 raw.githubusercontent.com 直链）单独失联导致该 DIRECT 的
+ *   流量被静默当空规则集、进而走了代理拖慢速度；geosite.dat/geoip.dat
+ *   是预编译二进制格式，查表匹配也比 classical/mrs 逐条正则更快。
+ * - ⚠️ 提醒：`GEOSITE,category-ads-all` 判定口径和之前三个规则集不完全
+ *   一样，理论上可能有个别域名的拦截结果发生变化（多拦或少拦）。如果用
+ *   下来发现某个网站图片/功能异常，或者广告没拦住，需要的话我可以帮你
+ *   加白名单例外规则。
+ *
+ * [3.22.0] - "影视讯息"更名"国外媒体"，扩容社交媒体分流
+ * - 【更名】"影视讯息"分组更名为"国外媒体"，语义上更贴合它现在承载的
+ *   内容（不只是影视/流媒体，还包含社交、通讯类应用）。
+ * - 【合并】原"电报消息"分组（hidden:true）已删除，Telegram 相关规则
+ *   并入"国外媒体"，不再保留单独分组。
+ * - 【新增】把 Facebook / Instagram / Pinterest / Twitter(X) / YouTube /
+ *   WhatsApp / Reddit / Line / Snapchat / Twitch / Discord 也归入
+ *   "国外媒体"。Discord 从"代理模式"移出，因为它本质上是国外社交/通讯
+ *   应用，跟 Telegram/Facebook 性质一致。
+ * - 【DNS 同步】nameserver-policy 里为这些新加入"国外媒体"的域名补上
+ *   了对应的 foreign DoH 精确解析。
+ *
+ * [3.21.0] - 规则集全面迁移到 HosheaPDNX（mrs 格式），清理 DNS 死代码
+ * [3.20.4] - 修复重复规则 + 清理死代码 + 去掉无用规则集下载
+ * - 【修复】customRules 里 `com.server.auditor.ssh.client` 这个包名被写了
+ *   两条冲突规则（"故障转移" 和 "🇹🇼 台湾 - 自动选择"）。Mihomo 按声明
+ *   顺序命中第一条就生效，第二条永远碰不到，属于死代码。已按"排在前面
+ *   的那条为准"保留了 "故障转移"，删掉了后面的 "🇹🇼 台湾 - 自动选择"。
+ *   ⚠️ 这是我按顺序猜的默认选择，如果你其实想要的是走台湾节点而不是故
+ *   障转移，告诉我一声，我把规则换回来即可。
+ * - 【清理】buildProxyGroups() 里 regionNames 的 `.filter(...)` 条件已经
+ *   名存实亡：groupedProxies 的 key 只有真的 push 过节点才会被创建，不
+ *   可能出现"key 在但数组为空"的情况，`.length > 0` 恒为真。删掉这行
+ *   filter，只保留排序，行为不变。
+ * - 【清理】buildRuleProvidersFromBase() 的 noIpRuleFolders 里删掉了
+ *   `GoogleFCM_no_ip`：对应的规则条目和应用分组都已经被注释掉不再使用，
+ *   但这一项还留在清单里，导致 Mihomo 启动时仍会白白下载解析这份规则
+ *   集。删掉后不影响任何现有分组或规则。
+ *
+ * [3.20.3] - fallbackNodePatterns 挪到 FALLBACK_PROXY_MODE 旁边
+ * - 位置调整：原来 CONFIG.fallbackNodePatterns 埋在 CONFIG 对象里，离
+ *   真正用到它的开关 FALLBACK_PROXY_MODE 隔了七八十行；现在把它提出来
+ *   变成独立常量 FALLBACK_NODE_PATTERNS，紧跟在 FALLBACK_PROXY_MODE 下
+ *   面，两个"故障转移筛选"相关的开关放在一起，改配置时不用再去 CONFIG
+ *   里翻找。
+ * - 引用同步：main() 里原来的 CONFIG.fallbackNodePatterns.some(...) 改成
+ *   FALLBACK_NODE_PATTERNS.some(...)；顶部 FALLBACK_PROXY_MODE 的说明注释
+ *   里提到的变量名也一并同步更新。
+ * - 未改变匹配逻辑本身（还是默认只匹配台湾节点的那条正则），纯粹是把配
+ *   置项搬了家。
+ *
+ * [3.20.2] - 文档结构调整：日志搬到文件末尾
+ * - 位置调整：把体积最大的"版本更新日志"注释块从文件最顶端搬到了文件最
+ *   末尾。原来打开文件第一屏全是历史日志，要往下翻好几屏才能看到第一行
+ *   真正的配置代码；现在头部只留 @file/@version/@description 三行加一句
+ *   指引，代码本身往前提到了文件开头。
+ * - 措辞微调：搬运过程中顺手统一了各条目的标点和个别用词的一致性（比如
+ *   "移除"/"删除"、"新增"/"引入" 混用的地方做了统一），日志记录的事实
+ *   内容本身没有增减、也没有改变任何历史条目的先后顺序。
+ * - 未涉及任何可执行代码的变更，纯文档重排。
+ *
+ * [3.20.1] - Bug 修复（本次修改，未改变原有功能设计意图）
+ * - 【修复1】buildProxyGroups() 里 regionNames 的过滤条件写错了比较对象：
+ *   原代码 `region !== "QT"` 拿的是 region.code 去和 groupedProxies 的 key
+ *   （实际是 region.name，例如 "🗃️ 其它"）比较，这两者永远不相等，导致这
+ *   行过滤条件恒为 true，形同虚设，起不到"没有其它节点时不生成🗃️其它分组"
+ *   的效果。改成 `region !== "🗃️ 其它"` 才是真正想比较的值。
+ * - 【修复2】3.18.0 changelog 里声称的域名精准分流规则
+ *   （bilibili.com / 163.com → 米哈机场专属 pdns-5147）在
+ *   nameserver-policy 里其实没有写进去，代码和注释对不上。本次先把后一组
+ *   （5个域名走阿里 DoH，用的是已有的 domestic 变量，无需新信息）补上；
+ *   bilibili.com / 163.com 要走的"米哈机场专属 pdns-5147"是什么地址我这
+ *   里没有依据，先用 TODO 注释占位，你需要的话告诉我具体地址我再补全。
+ * - 【重构】HIDDEN_RELAY_PROXY === 1 和 === 0 两个分支原来几乎是复制粘贴
+ *   的两份（唯一区别是分组要不要 hidden: true），现合并为一段，用一个
+ *   `relayGroupsHidden` 变量控制显隐，去掉约 30 行重复代码，同时清理了
+ *   多余的分号 `};`。
+ *
+ * [3.20.0] - 代码顺序重排（无逻辑变更）
+ * - 将 Builders 内各函数按"网络层配置(DNS/TUN/嗅探) → 节点/代理商 →
+ *   策略分组 → 规则集/规则"的逻辑顺序重新排列，原顺序是按历史添加时间
+ *   排列，跳来跳去不便于阅读。
+ * - 新增小节注释（DNS & TUN、节点与分组、规则），方便按功能区块跳转。
+ * - 未修改任何函数内部实现、字段值或输出结构。
+ *
+ * [3.19.0] - 重复代码清理
+ * - appGroups 重构：AI / 影视讯息 / 币圈交易 / 电报消息 / 谷歌服务 / 苹果服务 /
+ *   微软服务 / GoogleFCM 这 8 个分组除 name/icon 外配置完全相同，改用
+ *   appGroupDefs 数组 + map() 生成，不再手写 8 份几乎一样的对象字面量。
+ *   "漏网之鱼"/"广告拦截" proxies 不同，保留手写，不参与 map()。
+ * - rule-provider 基础配置去重：classicalBase / domainBase / ipcidrBase
+ *   原本在 buildRuleProviders() 和 buildRuleProvidersFromBase() 两处各自
+ *   重复定义，现提取为模块级常量 RULE_PROVIDER_BASES，两处共用同一份。
+ * - 分组测速地址统一：coreGroups / appGroups / manualGroups 里原本部分
+ *   缺失 url 字段，现全部显式补上 url: CONFIG.speedTestUrl，避免同一个
+ *   DIRECT 节点在不同分组下测速表现不一致。
+ * - speedTestUrl 换成 vivo 的 generate_204 地址，国内可达性更好。
+ *
+ * [3.18.0] - 多机场域名解析冲突修复 & DNS 规则重构
+ * - 修复冲突：移除了全局 `proxy-server-nameserver`，解决多机场伪装域名与普通域名解析矛盾的问题。
+ * - 域名精准分流：在 `nameserver-policy` 中按域名精准指定 DNS：
+ *   * `bilibili.com` / `163.com` → 走米哈机场专属 `pdns-5147` 解析。
+ *   * `link-t7.com` / `dexlos.com` / `aceurl.cc` / `fffo.cc` / `dickaws.top` → 统一走阿里 DoH。
+ * - DNS 校验优化：修复 DNSPod 裸 IP 直连 DoH（119.29.29.29）因证书无 IP SAN 导致的 TLS 校验失败，统一复用阿里 DoH 域名形式。
+ * - 常量提取：新增 `domestic` 局部变量封装国内阿里 DoH 数组，避免 5 处重复配置。
+ * - 兜底防护：`nameserver-policy` 补全 `geosite:cn` 与 `geosite:private`，防止跳过 fake-ip 的国内域名落入国外 DNS 解析导致 CDN 节点非最优。
+ * - 代码清理：彻底清空 `fallback` / `fallback-filter` 等已失效的死代码。
+ *
+ * [3.17.0] - 分组排序优化 & 冗余代码清理
+ * - 布局调整：将 "🗃️ 其它 - 全部节点" 单独提取为 `otherAllNodesGroup` 变量，并固定于 `proxy-groups` 最末尾（仅影响 UI 展示）。
+ * - 候选扩充：`appGroupProxies` 引入 "🗃️ 其它 - 全部节点"，AI、影视讯息、交易所等应用分组均可选择该项。
+ * - 清理无用代码：删除了定义后从未被引用的 `mainGroupNamesSD`；规范了 `otherAllNodesGroup` 及 `LANDING_INLINE_PROXIES` 的代码缩进与空行。
+ *
+ * [3.16.0] - 地区分组排列顺序防抖动修复
+ * - 排序稳定化：新增基于 `CONFIG.regions` 的 `regionOrder` 显式排序机制，替代原 `Object.entries(groupedProxies)` 乱序遍历。
+ * - 效果：确保生成的 "地区 - 自动选择/手动选择" 分组始终按 HK -> TW -> JP -> US -> SG -> 🗃️ 其它 的固定顺序排列，不受订阅节点实际先后顺序影响。
+ *
+ * [3.15.0] - 配置结构收敛与用字规范
+ * - 作用域收紧：将 `CONFIG.dns` 里的 domestic/foreign 地址池挪入 `buildDns()` 内部作为局部变量，降低配置暴露复杂度。
+ * - 文字统一：将全脚本中的地区兜底名称统一拼写为“🗃️ 其它”，消除“其他”与“🗃️ 其它”并存的异义问题。
+ * - 保持现状：确认韩国（KR）地区继续保持注释状态，节点自动并入“🗃️ 其它”。
+ *
+ * [3.14.0] - 落地代理扩展“直连版”
+ * - 功能扩展：自动根据 `LANDING_INLINE_PROXIES` 派生 `LANDING_DIRECT_PROXIES`（剥离 `dialer-proxy` 字段并追加“ - 直连”后缀）。
+ * - 体验优化：在“落地代理”分组中提供“前置代理”与“本机直连”双模式节点选项，且无需维护两份重复的节点配置文件。
+ *
+ * [3.13.0] - 注释规范化与文档重构
+ * - 文档整顿：统一按倒序（最新版本在前）排版历史日志。
+ * - 清理重复注释：修正 `buildProxyGroups` 中关于 Mihomo 移除 relay 类型的重复贴图注释，更新 `HIDDEN_RELAY_PROXY` 的说明。
+ * - 纯规范调整，无逻辑代码变更。
+ *
+ * [3.12.0] - 修复 dialer-proxy 配置位置报错
+ * - 报错修复：解决 Mihomo 报 "dialer-proxy configuration is not allowed on proxy-group" 的错误。
+ * - 架构调整：将 `dialer-proxy: "前置代理"` 逐个写在落地代理定义上，将“落地代理”策略组恢复为纯 select 策略组。
+ *
+ * [3.11.0] - 适配新版 Mihomo 内核 (移除 relay 类型)
+ * - 内核适配：因新版 Mihomo 彻底废弃 `type: relay` 分组，改用官方推荐的 `dialer-proxy` 链式拨号方案。
+ * - 结构重构：移除原“前置代理” relay 分组，直接利用节点级 `dialer-proxy` 属性实现前置代理拨号。
+ *
+ * [3.10.0] - 新增内联落地代理
+ * - 节点内嵌：引入 `LANDING_INLINE_PROXIES` 常量，直接在脚本内硬编码 4 个落地代理（US-AY / US-HY2 / US-VM / US-VL）。
+ * - 作用域隔离：内联节点仅挂载至“落地代理”分组，不参与订阅节点的地区分类、故障转移或延迟优选。
+ **/
